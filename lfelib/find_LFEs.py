@@ -21,7 +21,7 @@ import pickle
 from datetime import timedelta
 from math import ceil, cos, floor, pi
 
-import correlate
+from utils import correlate
 from get_data import get_from_IRIS, get_from_NCEDC
 
 def clean_LFEs(index, times, meancc, dt, freq0):
