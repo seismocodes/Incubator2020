@@ -1,12 +1,9 @@
 name: LFEcatalog
 channels:
   - conda-forge
-  - defaults
 dependencies:
   - python=3.7
-  - jupyter
   - jupyterlab
-  - notebook
   - obspy
   - pandas
   - scikit-learn
