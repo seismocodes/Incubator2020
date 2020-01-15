@@ -157,8 +157,8 @@ def fill_data(D, orientation, station, channels, reference):
         data.append(UD)
     return(data)
 
-def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
-        freq0, nattempts, waittime, draw=False, type_threshold='MAD', \
+def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
+        freq0=1.0, nattempts=2, waittime=5.0, draw=False, type_threshold='MAD', \
         threshold=0.0075):
     """
     Find LFEs with the temporary stations from FAME
