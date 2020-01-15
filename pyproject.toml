@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lfelib"
-version = "0.0.1"
+version = "0.0.2"
 description = "Python routines for working with GPS time series from a variety of processing centers"
 authors = ["Ariane Ducellier <ducela@uw.edu>"]
 license = "GNU General Public License v3.0"
@@ -9,9 +9,14 @@ homepage = "https://github.com/ArianeDucellier/Incubator2020"
 repository = "https://github.com/ArianeDucellier/Incubator2020"
 keywords = ["seismology", "geophysics", "scientific"]
 
+# https://github.com/python-poetry/poetry/issues/927#issuecomment-538178615
+[tool.poetry.scripts]
+lfefind = 'lfelib.lfe:cli'
+
 [tool.poetry.dependencies]
 python = "^3.7"
-numpy = "^1.16"
+#https://github.com/obspy/obspy/issues/2434
+numpy = "1.16.*"
 scipy = "^1.4"
 matplotlib = "^3.1"
 obspy = "^1.1"
@@ -20,7 +25,7 @@ scikit-learn = "^0.22"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 pytest-cov = "^2.8"
-black = {version = "^19.10b0", allow-prereleases = true}
+#black = {version = "^19.10b0", allow-prereleases = true}
 #dunamai = "^1" #currently failing
 
 [build-system]

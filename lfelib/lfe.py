@@ -21,8 +21,14 @@ import pickle
 from datetime import timedelta
 from math import ceil, cos, floor, pi
 
+import argparse
+
+# Relative package imports
 from utils import correlate
-from get_data import get_from_IRIS, get_from_NCEDC
+from utils.get_data import get_from_IRIS, get_from_NCEDC
+import data
+DATADIR = data.__path__[0]
+print('datadir = ', DATADIR, type(DATADIR))
 
 def clean_LFEs(index, times, meancc, dt, freq0):
     """
@@ -125,7 +131,7 @@ def fill_data(D, orientation, station, channels, reference):
         dN = orientation[1]['azimuth'] * pi / 180.0
         # Orientation of the template
         tE = reference[0]['azimuth'] * pi / 180.0
-        tN = reference[1]['azimuth'] * pi / 180.0   
+        tN = reference[1]['azimuth'] * pi / 180.0
         EWrot = Stream()
         NSrot = Stream()
         for i in range(0, len(EW)):
@@ -188,7 +194,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
     """
 
     # Get the network, channels, and location of the stations
-    staloc = pd.read_csv('../data/station_locations.txt', \
+    staloc = pd.read_csv(os.path.join(DATADIR, 'station_locations.txt'), \
         sep=r'\s{1,}', header=None)
     staloc.columns = ['station', 'network', 'channels', 'location', \
         'server', 'latitude', 'longitude']
@@ -207,7 +213,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
     # Read the templates
     templates = Stream()
     for station in stations:
-        data = pickle.load(open('../data/templates/' + filename + \
+        data = pickle.load(open(DATADIR + '/templates/' + filename + \
             '/' + station + '.pkl', 'rb'))
         if (len(data) == 3):
             EW = data[0]
@@ -248,7 +254,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
         template = templates.select(station=station, component='Z')[0]
         dt = template.stats.delta
         nt = template.stats.npts
-        duration = (nt - 1) * dt   
+        duration = (nt - 1) * dt
         Tstart = t1 - TDUR
         Tend = t2 + duration + TDUR
         delta = t2 + duration - t1
@@ -260,7 +266,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
         mylocation = location
         if (mylocation == '--'):
             mylocation = ''
-        response = '../data/response/' + network + '_' + station + '.xml'
+        response = DATADIR + '/response/' + network + '_' + station + '.xml'
         inventory = read_inventory(response, format='STATIONXML')
         reference = []
         for channel in mychannels:
@@ -273,12 +279,12 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
         if (server == 'IRIS'):
             (D, orientation) = get_from_IRIS(station, network, channels, \
                 location, Tstart, Tend, filt, dt, nattempts, waittime, \
-                errorfile)
+                errorfile, DATADIR)
         # Second case: we get the data from NCEDC
         elif (server == 'NCEDC'):
             (D, orientation) = get_from_NCEDC(station, network, channels, \
                 location, Tstart, Tend, filt, dt, nattempts, waittime, \
-                errorfile)
+                errorfile, DATADIR)
         else:
             raise ValueError('You can only download data from IRIS and NCEDC')
 
@@ -324,9 +330,9 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
                     else:
                         cc = cctemp
                     nchannel = nchannel + 1
-    
+
         if (nchannel > 0):
-   
+
             # Compute average cross-correlation across channels
             meancc = np.mean(cc, axis=0)
             if (type_threshold == 'MAD'):
@@ -355,7 +361,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
             if (draw == True):
                 params = {'xtick.labelsize':16,
                           'ytick.labelsize':16}
-                pylab.rcParams.update(params) 
+                pylab.rcParams.update(params)
                 plt.figure(1, figsize=(20, 8))
                 if np.shape(index)[1] > 0:
                     for i in range(0, len(time)):
@@ -389,36 +395,47 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
         df_all = pickle.load(open(namefile, 'rb'))
         df_all = pd.concat([df_all, df], ignore_index=True)
     else:
-        df_all = df    
+        df_all = df
     df_all = df_all.astype(dtype={'year':'int32', 'month':'int32', \
         'day':'int32', 'hour':'int32', 'minute':'int32', \
         'second':'float', 'cc':'float', 'nchannel':'int32'})
     pickle.dump(df_all, open(namefile, 'wb'))
 
+
+def cli():
+    """Command line parser."""
+    parser = argparse.ArgumentParser(description='Find LFEs using the templates from Plourde et al')
+    parser.add_argument('-t', type=str, dest='filename', required=True,
+                        help='Name of the template')
+    parser.add_argument('-s', type=str, nargs='+', dest='stations', required=True,
+                        help='name of the stations used for the matched-filter algorithm')
+    parser.add_argument('-t0', type=int, nargs='+', dest='tbegin', required=True,
+                        help='Time when we begin looking for LFEs')
+    parser.add_argument('-tf', type=int, nargs='+', dest='tend', required=True,
+                        help='Time we stop looking for LFEs')
+    parser.add_argument('-td', type=float, dest='TDUR', default=10.0, required=False,
+                        help='Time to add before and after the time window for tapering')
+    parser.add_argument('-f', type=float, nargs='+', dest='filt',  default=[1.5, 9.0], required=False,
+                        help='Lower and upper frequencies of the filter')
+    parser.add_argument('-f0', type=float, dest='freq0',  default=1.0, required=False,
+                        help='Maximum frequency rate of LFE occurrence')
+    parser.add_argument('-n', type=int, dest='nattempts', default=10, required=False,
+                        help='Number of times we try to download data')
+    parser.add_argument('-w', type=float, dest='waittime', default=10.0, required=False,
+                        help='Time to wait between two attempts at downloading')
+    parser.add_argument('-d', action='store_true', dest='draw', default=False, required=False,
+                        help='Do we draw a figure of the cross-correlation?')
+    parser.add_argument('-tr', choices=['MAD','Threshold'], dest='type_threshold', default='MAD', required=False,
+                        help='Threshold type')
+    parser.add_argument('-tv', type=float, dest='threshold', default=8, required=False,
+                        help='Threshold value')
+
+    args = parser.parse_args()
+    print(args)
+    find_LFEs(args.filename, args.stations, args.tbegin, args.tend, args.TDUR, args.filt, \
+            args.freq0, args.nattempts, args.waittime, args.draw, args.type_threshold, \
+            args.threshold)
+
+
 if __name__ == '__main__':
-
-    # Set the parameters
-    TDUR = 10.0
-    filt = (1.5, 9.0)
-    freq0 = 1.0
-    nattempts = 10
-    waittime = 10.0
-    draw = False
-    type_threshold = 'MAD'
-    threshold = 8 
-
-    # Look at LFEs for April 21st 2008
-    tbegin = (2008, 4, 21, 0, 0, 0)
-    tend = (2008, 4, 22, 0, 0, 0)
-
-    # Subduction zone family
-    filename = '080421.14.048'
-    stations = ['B039', 'KHBB', 'KRMB', 'KSXB', 'WDC', 'YBH']
-    find_LFEs(filename, stations, tbegin, tend, TDUR, filt, freq0, nattempts, \
-        waittime, draw, type_threshold, threshold)
-
-    # Strike-slip fault family
-    filename = '080326.08.015'
-    stations = ['GCK', 'GFC', 'GHL', 'GSN', 'GWR', 'HOPS', 'KCPB']
-    find_LFEs(filename, stations, tbegin, tend, TDUR, filt, freq0, nattempts, \
-        waittime, draw, type_threshold, threshold)
+    cli()

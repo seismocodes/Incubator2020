@@ -15,7 +15,7 @@ import time
 from fractions import Fraction
 
 def get_from_IRIS(station, network, channels, location, Tstart, Tend, \
-    filt, dt, nattempts, waittime, errorfile):
+    filt, dt, nattempts, waittime, errorfile, datadir):
     """
     Function to get the waveform from IRIS for a given station
 
@@ -76,7 +76,7 @@ def get_from_IRIS(station, network, channels, location, Tstart, Tend, \
             D.interpolate(ratio.denominator * freq, method='lanczos', a=10)
             D.decimate(ratio.numerator, no_filter=True)
             # Get station orientation
-            filename = '../data/response/' + network + '_' + station + '.xml'
+            filename = datadir + '/response/' + network + '_' + station + '.xml'
             inventory = read_inventory(filename, format='STATIONXML')
             orientation = []
             for channel in range(0, len(D)):
@@ -104,7 +104,7 @@ def get_from_IRIS(station, network, channels, location, Tstart, Tend, \
                 return((0, 0))
 
 def get_from_NCEDC(station, network, channels, location, Tstart, Tend, \
-    filt, dt, nattempts, waittime, errorfile):
+    filt, dt, nattempts, waittime, errorfile, datadir):
     """
     Function to get the waveform from NCEDC for a given station
 
@@ -164,7 +164,7 @@ def get_from_NCEDC(station, network, channels, location, Tstart, Tend, \
             # Taper first and last 5 s of data
             D.taper(type='hann', max_percentage=None, max_length=5.0)
             # Remove instrument response
-            filename = '../data/response/' + network + '_' + station + '.xml'
+            filename = datadir + '/response/' + network + '_' + station + '.xml'
             inventory = read_inventory(filename, format='STATIONXML')
             D.attach_response(inventory)
             D.remove_response(output='VEL', \
