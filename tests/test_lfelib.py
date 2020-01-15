@@ -18,16 +18,18 @@ threshold = 8
 tbegin = (2008, 4, 21, 0, 0, 0)
 tend = (2008, 4, 22, 0, 0, 0)
 
-def test_subduction():
-    # Subduction zone family
-    filename = '080421.14.048'
-    stations = ['B039', 'KHBB', 'KRMB', 'KSXB', 'WDC', 'YBH']
-    lfelib.find_LFEs.find_LFEs(filename, stations, tbegin, tend, TDUR, filt, freq0, nattempts, \
-        waittime, draw, type_threshold, threshold)
+#def test_subduction():
+#    # Subduction zone family
+#    filename = '080421.14.048'
+#    #stations = ['B039', 'KHBB', 'KRMB', 'KSXB', 'WDC', 'YBH']
+#    stations = ['B039', 'KHBB']
+#    lfelib.lfe.find_LFEs(filename, stations, tbegin, tend, TDUR, filt, freq0, nattempts, \
+#        waittime, draw, type_threshold, threshold)
 
 def test_strikeslip():
     # Strike-slip fault family
     filename = '080326.08.015'
-    stations = ['GCK', 'GFC', 'GHL', 'GSN', 'GWR', 'HOPS', 'KCPB']
-    lfelib.find_LFEs.find_LFEs(filename, stations, tbegin, tend, TDUR, filt, freq0, nattempts, \
+    #stations = ['GCK', 'GFC', 'GHL', 'GSN', 'GWR', 'HOPS', 'KCPB']
+    stations = ['GCK', 'GFC']
+    lfelib.lfe.find_LFEs(filename, stations, tbegin, tend, TDUR, filt, freq0, nattempts, \
         waittime, draw, type_threshold, threshold)
