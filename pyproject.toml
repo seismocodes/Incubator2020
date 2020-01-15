@@ -17,6 +17,7 @@ lfefind = 'lfelib.lfe:cli'
 python = "^3.7"
 #https://github.com/obspy/obspy/issues/2434
 numpy = "1.16.*"
+pandas = "^0.25"
 scipy = "^1.4"
 matplotlib = "^3.1"
 obspy = "^1.1"
