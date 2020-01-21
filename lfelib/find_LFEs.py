@@ -188,7 +188,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
     """
 
     # Get the network, channels, and location of the stations
-    staloc = pd.read_csv('../data/station_locations.txt', \
+    staloc = pd.read_csv('data/station_locations.txt', \
         sep=r'\s{1,}', header=None)
     staloc.columns = ['station', 'network', 'channels', 'location', \
         'server', 'latitude', 'longitude']
@@ -207,7 +207,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
     # Read the templates
     templates = Stream()
     for station in stations:
-        data = pickle.load(open('../data/templates/' + filename + \
+        data = pickle.load(open('data/templates/' + filename + \
             '/' + station + '.pkl', 'rb'))
         if (len(data) == 3):
             EW = data[0]
@@ -260,7 +260,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR, filt, \
         mylocation = location
         if (mylocation == '--'):
             mylocation = ''
-        response = '../data/response/' + network + '_' + station + '.xml'
+        response = 'data/response/' + network + '_' + station + '.xml'
         inventory = read_inventory(response, format='STATIONXML')
         reference = []
         for channel in mychannels:
