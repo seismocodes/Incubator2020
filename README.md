@@ -1,5 +1,5 @@
 # Incubator2020
-![Action Status](https://github.com/ArianeDucellier/Incubator2020/workflows/CI/badge.svg)
+![Package Build Status](https://github.com/ArianeDucellier/Incubator2020/workflows/Package/badge.svg)
 
 This repository contains all files related to the codes developed during Winter 2020 Incubator project Daily monitoring of low-frequency earthquake activity and slow slip event occurrence.
 
