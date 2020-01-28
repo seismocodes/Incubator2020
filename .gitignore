@@ -1,9 +1,6 @@
 # Custom
+*.miniseed
 *.bak
-station.miniseed
-waveform.request
-lfelib/error/*
-lfelib/LFEs/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
