@@ -159,7 +159,7 @@ def fill_data(D, orientation, station, channels, reference):
 
 def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
         freq0=1.0, nattempts=2, waittime=5.0, draw=False, \
-		type_threshold='MAD', threshold=0.0075):
+        type_threshold='MAD', threshold=0.0075):
     """
     Find LFEs with the temporary stations from FAME
     using the templates from Plourde et al. (2015)
@@ -291,7 +291,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
         # Append data to stream
         if (type(D) == obspy.core.stream.Stream):
             stationdata = fill_data(D, orientation, station, channels, \
-				reference)
+                reference)
             if (len(stationdata) > 0):
                 for stream in stationdata:
                     data.append(stream)
@@ -406,56 +406,95 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
 def cli():
     """Command line parser."""
     parser = argparse.ArgumentParser( \
-		description='Find LFEs using the templates from Plourde et al')
+        description='Find LFEs using the templates from Plourde et al')
     parser.add_argument('-t', type=str, dest='filename', \
-		required=True, \
-		help='Name of the template')
+        required=True, \
+        help='Name of the template')
     parser.add_argument('-s', type=str, nargs='+', dest='stations', \
-		required=True, \
-		help='name of the stations used for the matched-filter algorithm')
+        required=True, \
+        help='name of the stations used for the matched-filter algorithm')
     parser.add_argument('-t0', type=int, nargs='+', dest='tbegin', \
-		required=True, \
-		help='Time when we begin looking for LFEs')
+        required=True, \
+        help='Time when we begin looking for LFEs')
     parser.add_argument('-tf', type=int, nargs='+', dest='tend', \
-		required=True, \
-		help='Time we stop looking for LFEs')
+        required=True, \
+        help='Time we stop looking for LFEs')
     parser.add_argument('-td', type=float, dest='TDUR', default=10.0, \
-		required=False, \
-		help='Time to add before and after the time window for tapering')
+        required=False, \
+        help='Time to add before and after the time window for tapering')
     parser.add_argument('-f', type=float, nargs='+', dest='filt',  \
-		default=[1.5, 9.0], required=False, \
-		help='Lower and upper frequencies of the filter')
+        default=[1.5, 9.0], required=False, \
+        help='Lower and upper frequencies of the filter')
     parser.add_argument('-f0', type=float, dest='freq0',  default=1.0, \
-		required=False, \
-		help='Maximum frequency rate of LFE occurrence')
+        required=False, \
+        help='Maximum frequency rate of LFE occurrence')
     parser.add_argument('-n', type=int, dest='nattempts', default=10, \
-		required=False,
-		help='Number of times we try to download data')
+        required=False,
+        help='Number of times we try to download data')
     parser.add_argument('-w', type=float, dest='waittime', default=10.0, \
-		required=False, \
-		help='Time to wait between two attempts at downloading')
+        required=False, \
+        help='Time to wait between two attempts at downloading')
     parser.add_argument('-d', action='store_true', dest='draw', default=False, \
-		required=False, \
-		help='Do we draw a figure of the cross-correlation?')
+        required=False, \
+        help='Do we draw a figure of the cross-correlation?')
     parser.add_argument('-tr', choices=['MAD','Threshold'], \
-		dest='type_threshold', default='MAD', required=False, \
-		help='Threshold type')
+        dest='type_threshold', default='MAD', required=False, \
+        help='Threshold type')
     parser.add_argument('-tv', type=float, dest='threshold', default=8, \
-		required=False, \
-		help='Threshold value')
+        required=False, \
+        help='Threshold value')
 
     args = parser.parse_args()
     print(args)
     find_LFEs(args.filename, args.stations, args.tbegin, args.tend, args.TDUR, \
-		args.filt, args.freq0, args.nattempts, args.waittime, args.draw, \
-		args.type_threshold, args.threshold)
-
+        args.filt, args.freq0, args.nattempts, args.waittime, args.draw, \
+        args.type_threshold, args.threshold)
 
 if __name__ == '__main__':
 #    cli()
-    find_LFEs('080421.14.048', ['B039', 'KHBB', 'KRMB', 'KSXB', 'WDC', 'YBH'], \
-        (2008, 4, 21, 0, 0, 0),  (2008, 4, 22, 0, 0, 0), 10.0, (1.5, 9.0), \
-        1.0, 10, 10.0, False, 'MAD', 8)
-    find_LFEs('080326.08.015', ['GCK', 'GFC', 'GHL', 'GSN', 'GWR', 'HOPS', \
-		'KCPB'], (2008, 4, 21, 0, 0, 0),  (2008, 4, 22, 0, 0, 0), 10.0, \
-		(1.5, 9.0), 1.0, 10, 10.0, False, 'MAD', 8)
+    # Year 2014
+    year = 2014
+    # Month of August
+    month = 8
+    # Loop on days
+        for day in range (1, 32):
+            # Loop on hours
+            for hour in range(0, 24):
+                tbegin = (year, month, day, hour, 0, 0)
+                if hour == 23:
+                    if day == 31:
+                        tend = (year, month + 1, 1, 0, 0, 0)
+                    else:
+                        tend = (year, month, day + 1, 0, 0, 0)
+                else:
+                    tend = (year, month, day, hour + 1, 0, 0)
+                # Subduction zone family
+                find_LFEs('080421.14.048', ['B039', 'KHBB', 'KRMB', 'KSXB', \
+                    'WDC', 'YBH'], tbegin, tend, 10.0, (1.5, 9.0), 1.0, 10, \
+                    10.0, False, 'MAD', 8)
+                # Strike-slip fault family
+                find_LFEs('080326.08.015', ['GCK', 'GFC', 'GHL', 'GSN', \
+                    'GWR', 'HOPS', 'KCPB'], tbegin, tend, 10.0, (1.5, 9.0), \
+                    1.0, 10, 10.0, False, 'MAD', 8)
+    # Month of September
+    month = 9
+    # Loop on days
+        for day in range (1, 31):
+            # Loop on hours
+            for hour in range(0, 24):
+                tbegin = (year, month, day, hour, 0, 0)
+                if hour == 23:
+                    if day == 30:
+                        tend = (year, month + 1, 1, 0, 0, 0)
+                    else:
+                        tend = (year, month, day + 1, 0, 0, 0)
+                else:
+                    tend = (year, month, day, hour + 1, 0, 0)
+                # Subduction zone family
+                find_LFEs('080421.14.048', ['B039', 'KHBB', 'KRMB', 'KSXB', \
+                    'WDC', 'YBH'], tbegin, tend, 10.0, (1.5, 9.0), 1.0, 10, \
+                    10.0, False, 'MAD', 8)
+                # Strike-slip fault family
+                find_LFEs('080326.08.015', ['GCK', 'GFC', 'GHL', 'GSN', \
+                    'GWR', 'HOPS', 'KCPB'], tbegin, tend, 10.0, (1.5, 9.0), \
+                    1.0, 10, 10.0, False, 'MAD', 8)
