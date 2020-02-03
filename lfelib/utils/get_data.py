@@ -154,51 +154,51 @@ def get_from_NCEDC(station, network, channels, location, Tstart, Tend, \
     # Loop to try downloading several times
     success = False
     attempts = 0
-#    while attempts < nattempts and not success:
-#        try:
+    while attempts < nattempts and not success:
+        try:
             # Get data from server
-    os.system(request)
-    D = read('station.miniseed')
+            os.system(request)
+            D = read('station.miniseed')
             # Detrend data
-    D.detrend(type='linear')
+            D.detrend(type='linear')
             # Taper first and last 5 s of data
-    D.taper(type='hann', max_percentage=None, max_length=5.0)
+            D.taper(type='hann', max_percentage=None, max_length=5.0)
             # Remove instrument response
-    filename = datadir + '/response/' + network + '_' + station + '.xml'
-    inventory = read_inventory(filename, format='STATIONXML')
-    D.attach_response(inventory)
-    D.remove_response(output='VEL', \
+            filename = datadir + '/response/' + network + '_' + station + '.xml'
+            inventory = read_inventory(filename, format='STATIONXML')
+            D.attach_response(inventory)
+            D.remove_response(output='VEL', \
                 pre_filt=(0.2, 0.5, 10.0, 15.0), water_level=80.0)
             # Filter
-    D.filter('bandpass', freqmin=filt[0], freqmax=filt[1], \
+            D.filter('bandpass', freqmin=filt[0], freqmax=filt[1], \
                 zerophase=True)
             # Resample
-    freq = D[0].stats.sampling_rate
-    ratio = Fraction(int(freq), int(1.0 / dt))
-    D.interpolate(ratio.denominator * freq, method='lanczos', a=10)
-    D.decimate(ratio.numerator, no_filter=True)
+            freq = D[0].stats.sampling_rate
+            ratio = Fraction(int(freq), int(1.0 / dt))
+            D.interpolate(ratio.denominator * freq, method='lanczos', a=10)
+            D.decimate(ratio.numerator, no_filter=True)
             # Get station orientation
-    orientation = []
-    for channel in range(0, len(D)):
-        angle = inventory.get_orientation(D[channel].stats.network + \
+            orientation = []
+            for channel in range(0, len(D)):
+                angle = inventory.get_orientation(D[channel].stats.network + \
                     '.' + D[channel].stats.station + '.' + \
                     D[channel].stats.location + '.' + \
                     D[channel].stats.channel, Tstart + D[channel].stats.delta \
                     * D[channel].stats.npts * 0.5)
-        orientation.append(angle)
-    success = True
-    return(D, orientation)
-#        except:
-#            message = 'Could not download data for station {} '.format( \
-#                station) + 'at time {}/{}/{} - {}:{}:{}\n'.format( \
-#                Tstart.year, Tstart.month, Tstart.day, Tstart.hour, \
-#                Tstart.minute, Tstart.second)
-#            with open(errorfile, 'a') as file:
-#                file.write(message)
-#            attempts += 1
-#            time.sleep(waittime)
-#            if attempts == nattempts:
-#                with open(errorfile, 'a') as file:
-#                    file.write('Failed to download data after {} attempts\n'. \
-#                        format(nattempts))
-#                return((0, 0))
+                orientation.append(angle)
+            success = True
+            return(D, orientation)
+        except:
+            message = 'Could not download data for station {} '.format( \
+                station) + 'at time {}/{}/{} - {}:{}:{}\n'.format( \
+                Tstart.year, Tstart.month, Tstart.day, Tstart.hour, \
+                Tstart.minute, Tstart.second)
+            with open(errorfile, 'a') as file:
+                file.write(message)
+            attempts += 1
+            time.sleep(waittime)
+            if attempts == nattempts:
+                with open(errorfile, 'a') as file:
+                    file.write('Failed to download data after {} attempts\n'. \
+                        format(nattempts))
+                return((0, 0))
