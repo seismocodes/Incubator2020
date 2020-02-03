@@ -1,6 +1,8 @@
 # Custom
 *.miniseed
 *.bak
+lfelib/error/*
+lfelib/LFEs/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
