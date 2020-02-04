@@ -272,7 +272,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
         for channel in mychannels:
             angle = inventory.get_orientation(network + '.' + \
                 station + '.' + mylocation + '.' + channel, \
-                UTCDateTime(2008, 4, 1, 0, 0, 0))
+                UTCDateTime(2014, 9, 1, 0, 0, 0))
             reference.append(angle)
 
         # First case: we can get the data from IRIS
@@ -457,9 +457,9 @@ if __name__ == '__main__':
     # Month of August
     month = 8
     # Loop on days
-    for day in range (1, 32):
+    for day in range (1, 2): #32):
         # Loop on hours
-        for hour in range(0, 24):
+        for hour in range(0, 1): #24):
             tbegin = (year, month, day, hour, 0, 0)
             if hour == 23:
                 if day == 31:
@@ -469,13 +469,13 @@ if __name__ == '__main__':
             else:
                 tend = (year, month, day, hour + 1, 0, 0)
             # Subduction zone family
-            find_LFEs('080421.14.048', ['B039', 'KHBB', 'KRMB', 'KSXB', \
-                'WDC', 'YBH'], tbegin, tend, 10.0, (1.5, 9.0), 1.0, 10, \
-                10.0, False, 'MAD', 8)
+#            find_LFEs('080421.14.048', ['B039', 'KHBB', 'KRMB', 'KSXB', \
+#                'WDC', 'YBH'], tbegin, tend, 10.0, (1.5, 9.0), 1.0, 10, \
+#                10.0, False, 'MAD', 8)
             # Strike-slip fault family
-#            find_LFEs('080326.08.015', ['GCK', 'GFC', 'GHL', 'GSN', \
-#                'GWR', 'HOPS', 'KCPB'], tbegin, tend, 10.0, (1.5, 9.0), \
-#                1.0, 10, 10.0, False, 'MAD', 8)
+            find_LFEs('080326.08.015', ['GCK', 'GFC', 'GHL', 'GSN', \
+                'GWR', 'HOPS', 'KCPB'], tbegin, tend, 10.0, (1.5, 9.0), \
+                1.0, 10, 10.0, False, 'MAD', 8)
     # Month of September
 #    month = 9
     # Loop on days
