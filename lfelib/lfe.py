@@ -272,7 +272,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
         for channel in mychannels:
             angle = inventory.get_orientation(network + '.' + \
                 station + '.' + mylocation + '.' + channel, \
-                UTCDateTime(2014, 9, 1, 0, 0, 0))
+                UTCDateTime(2020, 1, 1, 0, 0, 0))
             reference.append(angle)
 
         # First case: we can get the data from IRIS
@@ -391,16 +391,16 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
                 plt.close(1)
 
     # Add to pandas dataframe and save
-    namefile = 'LFEs/' + filename + '/catalog.pkl'
+    namefile = 'LFEs/' + filename + '/catalog.csv'
     if os.path.exists(namefile):
-        df_all = pickle.load(open(namefile, 'rb'))
+        df_all = pd.read_csv(namefile)
         df_all = pd.concat([df_all, df], ignore_index=True)
     else:
         df_all = df
     df_all = df_all.astype(dtype={'year':'int32', 'month':'int32', \
         'day':'int32', 'hour':'int32', 'minute':'int32', \
         'second':'float', 'cc':'float', 'nchannel':'int32'})
-    pickle.dump(df_all, open(namefile, 'wb'))
+    df_all.to_csv(namefile)
 
 
 def cli():
@@ -451,50 +451,4 @@ def cli():
         args.type_threshold, args.threshold)
 
 if __name__ == '__main__':
-#    cli()
-    # Year 2014
-    year = 2014
-    # Month of August
-    month = 8
-    # Loop on days
-    for day in range (1, 2): #32):
-        # Loop on hours
-        for hour in range(0, 1): #24):
-            tbegin = (year, month, day, hour, 0, 0)
-            if hour == 23:
-                if day == 31:
-                    tend = (year, month + 1, 1, 0, 0, 0)
-                else:
-                    tend = (year, month, day + 1, 0, 0, 0)
-            else:
-                tend = (year, month, day, hour + 1, 0, 0)
-            # Subduction zone family
-#            find_LFEs('080421.14.048', ['B039', 'KHBB', 'KRMB', 'KSXB', \
-#                'WDC', 'YBH'], tbegin, tend, 10.0, (1.5, 9.0), 1.0, 10, \
-#                10.0, False, 'MAD', 8)
-            # Strike-slip fault family
-            find_LFEs('080326.08.015', ['GCK', 'GFC', 'GHL', 'GSN', \
-                'GWR', 'HOPS', 'KCPB'], tbegin, tend, 10.0, (1.5, 9.0), \
-                1.0, 10, 10.0, False, 'MAD', 8)
-    # Month of September
-#    month = 9
-    # Loop on days
-#    for day in range (1, 31):
-        # Loop on hours
-#        for hour in range(0, 24):
-#            tbegin = (year, month, day, hour, 0, 0)
-#            if hour == 23:
-#                if day == 30:
-#                    tend = (year, month + 1, 1, 0, 0, 0)
-#                else:
-#                    tend = (year, month, day + 1, 0, 0, 0)
-#            else:
-#                tend = (year, month, day, hour + 1, 0, 0)
-            # Subduction zone family
-#            find_LFEs('080421.14.048', ['B039', 'KHBB', 'KRMB', 'KSXB', \
-#                'WDC', 'YBH'], tbegin, tend, 10.0, (1.5, 9.0), 1.0, 10, \
-#                10.0, False, 'MAD', 8)
-            # Strike-slip fault family
-#            find_LFEs('080326.08.015', ['GCK', 'GFC', 'GHL', 'GSN', \
-#                'GWR', 'HOPS', 'KCPB'], tbegin, tend, 10.0, (1.5, 9.0), \
-#                1.0, 10, 10.0, False, 'MAD', 8)
+    cli()
