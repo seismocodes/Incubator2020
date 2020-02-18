@@ -1,0 +1,40 @@
+name: CronJob
+# Run latest tagged version of software and save result every day
+on:
+  schedule:
+#    - cron: '0 0 * * *' # Daily at midnight
+    - cron: '*/5 * * * *' #Every 5 minutes for testing
+
+jobs:
+  cronjob:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: Enable Pip Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # NOTE: change this to PyPi later
+      - name: Install lfelib from PyPi
+        run: |
+          python --version
+          pip install --extra-index-url https://test.pypi.org/simple/ lfelib
+
+      - name: Run Analysis
+        run: |
+          lfefind -t 080326.08.015 -s GCK GFC -t0 2008 4 21 0 0 0 -tf 2008 4 22 0 0 0
+
+      - name: Save Results
+        run: |
+          ls
