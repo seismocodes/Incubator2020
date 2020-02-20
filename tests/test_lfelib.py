@@ -31,5 +31,5 @@ def test_strikeslip():
     filename = '080326.08.015'
     #stations = ['GCK', 'GFC', 'GHL', 'GSN', 'GWR', 'HOPS', 'KCPB']
     stations = ['GCK', 'GFC']
-    lfelib.lfe.find_LFEs(filename, stations, tbegin, tend, TDUR, filt, freq0, nattempts, \
+    lfelib.lfe.find_LFEs(filename, stations, tbegin, tend, 'strikeslip.csv', TDUR, filt, freq0, nattempts, \
         waittime, draw, type_threshold, threshold)
