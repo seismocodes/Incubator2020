@@ -2,8 +2,8 @@ name: CronJob
 # Run latest tagged version of software and save result every day
 on:
   schedule:
-#    - cron: '0 0 * * *' # Daily at midnight
-    - cron: '*/5 * * * *' #Every 5 minutes for testing
+    - cron: '0 0 * * *' # Daily at midnight
+#    - cron: '*/5 * * * *' #Every 5 minutes for testing
 
 jobs:
   cronjob:
@@ -16,14 +16,6 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.7
-
-      - name: Enable Pip Cache
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
 
       # NOTE: change this to PyPi later
       - name: Install lfelib from PyPi

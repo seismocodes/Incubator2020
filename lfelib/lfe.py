@@ -29,6 +29,7 @@ from utils.get_data import get_from_IRIS, get_from_NCEDC
 import data
 DATADIR = data.__path__[0]
 print('datadir = ', DATADIR, type(DATADIR))
+print('datadir = ', DATADIR, type(DATADIR))
 
 def clean_LFEs(index, times, meancc, dt, freq0):
     """
