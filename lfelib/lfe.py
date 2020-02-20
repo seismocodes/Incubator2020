@@ -28,8 +28,7 @@ from utils import correlate
 from utils.get_data import get_from_IRIS, get_from_NCEDC
 import data
 DATADIR = data.__path__[0]
-print('datadir = ', DATADIR, type(DATADIR))
-print('datadir = ', DATADIR, type(DATADIR))
+#print('datadir = ', DATADIR, type(DATADIR))
 
 def clean_LFEs(index, times, meancc, dt, freq0):
     """
@@ -158,7 +157,7 @@ def fill_data(D, orientation, station, channels, reference):
         data.append(UD)
     return(data)
 
-def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
+def find_LFEs(filename, stations, tbegin, tend, outputfile, TDUR=10.0, filt=(1.5, 9.0), \
         freq0=1.0, nattempts=2, waittime=5.0, draw=False, \
         type_threshold='MAD', threshold=0.0075):
     """
@@ -243,7 +242,6 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
     # Read the data
     data = []
     for station in stations:
-        print(station)
         # Get station metadata for downloading
         for ir in range(0, len(staloc)):
             if (station == staloc['station'][ir]):
@@ -274,7 +272,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
         for channel in mychannels:
             angle = inventory.get_orientation(network + '.' + \
                 station + '.' + mylocation + '.' + channel, \
-                UTCDateTime(2008, 4, 1, 0, 0, 0))
+                UTCDateTime(2020, 1, 1, 0, 0, 0))
             reference.append(angle)
 
         # First case: we can get the data from IRIS
@@ -393,16 +391,16 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
                 plt.close(1)
 
     # Add to pandas dataframe and save
-    namefile = 'LFEs/' + filename + '/catalog.csv'
-    if os.path.exists(namefile):
-        df_all = pd.read_csv(namefile)
-        df_all = pd.concat([df_all, df], ignore_index=True)
-    else:
-        df_all = df
+#    namefile = 'LFEs/' + filename + '/catalog.csv'
+#    if os.path.exists(namefile):
+#        df_all = pd.read_csv(namefile)
+#        df_all = pd.concat([df_all, df], ignore_index=True)
+#    else:
+    df_all = df
     df_all = df_all.astype(dtype={'year':'int32', 'month':'int32', \
         'day':'int32', 'hour':'int32', 'minute':'int32', \
         'second':'float', 'cc':'float', 'nchannel':'int32'})
-    df_all.to_csv(namefile)
+    df_all.to_csv('LFEs/' + filename + '/' + outputfile)
 
 
 def cli():
@@ -445,10 +443,13 @@ def cli():
     parser.add_argument('-tv', type=float, dest='threshold', default=8, \
         required=False, \
         help='Threshold value')
+    parser.add_argument('-o', type=str, dest='outputfile', \
+        required=True, \
+        help='Name of outputfile')
 
     args = parser.parse_args()
     print(args)
-    find_LFEs(args.filename, args.stations, args.tbegin, args.tend, args.TDUR, \
+    find_LFEs(args.filename, args.stations, args.tbegin, args.tend, args.outputfile, args.TDUR, \
         args.filt, args.freq0, args.nattempts, args.waittime, args.draw, \
         args.type_threshold, args.threshold)
 
