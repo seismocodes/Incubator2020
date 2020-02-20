@@ -196,7 +196,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
 
     # Get the network, channels, and location of the stations
     staloc = pd.read_csv(os.path.join(DATADIR, 'station_locations.txt'), \
-        sep=r'\s{1,}', header=None)
+        sep=r'\s{1,}', header=None, engine='python')
     staloc.columns = ['station', 'network', 'channels', 'location', \
         'server', 'latitude', 'longitude']
 
@@ -243,6 +243,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
     # Read the data
     data = []
     for station in stations:
+        print(station)
         # Get station metadata for downloading
         for ir in range(0, len(staloc)):
             if (station == staloc['station'][ir]):
@@ -262,7 +263,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
         ndata = int(delta / dt) + 1
 
         # Orientation of template
-        # Date chosen: April 1st 2008
+        # Date chosen: January 1st 2020
         mychannels = channels.split(',')
         mylocation = location
         if (mylocation == '--'):
@@ -273,7 +274,7 @@ def find_LFEs(filename, stations, tbegin, tend, TDUR=10.0, filt=(1.5, 9.0), \
         for channel in mychannels:
             angle = inventory.get_orientation(network + '.' + \
                 station + '.' + mylocation + '.' + channel, \
-                UTCDateTime(2020, 1, 1, 0, 0, 0))
+                UTCDateTime(2008, 4, 1, 0, 0, 0))
             reference.append(angle)
 
         # First case: we can get the data from IRIS
