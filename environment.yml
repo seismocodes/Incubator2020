@@ -1,7 +1,7 @@
-name: LFEcatalog
+# environment for running lfelib
+name: lfelib
 channels:
   - conda-forge
-  - defaults
 dependencies:
   - python=3.7
   - jupyterlab
