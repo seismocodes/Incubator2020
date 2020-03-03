@@ -6,6 +6,6 @@ year2=$(date -v -2d '+%Y')
 month2=$(date -v -2d '+%m')
 day2=$(date -v -2d '+%d')
 
-lfefind -t 080421.14.048 -s B039 KHBB KRMB KSXB WDC YBH -t0 2008 4 21 0 0 0 -tf 2008 4 22 0 0 0 -td 10.0 -f 1.5 9.0 -f0 1.0 -n 10 -w 10.0 -tr MAD -tv 8.0
+lfefind -t 080421.14.048 -s B039 KHBB KRMB KSXB WDC YBH -t0 $year1 $month1 $day1 0 0 0 -tf $year2 $month2 $day2 0 0 0 -td 10.0 -f 1.5 9.0 -f0 1.0 -n 10 -w 10.0 -tr MAD -tv 8.0 -o catalog_${year1}_${month1}_${day1}.csv
 
-lfefind -t 080326.08.015 -s GCK GFC GHL GSN HOPS KCPB -t0 2008 4 21 0 0 0 -tf 2008 4 22 0 0 0 -td 10.0 -f 1.5 9.0 -f0 1.0 -n 10 -w 10.0 -tr MAD -tv 8.0
+lfefind -t 080326.08.015 -s GCK GFC GHL GSN HOPS KCPB -t0 $year1 $month1 $day1 0 0 0 -tf $year2 $month2 $day2 0 0 0 -td 10.0 -f 1.5 9.0 -f0 1.0 -n 10 -w 10.0 -tr MAD -tv 8.0 -o catalog_${year1}_${month1}_${day1}.csv
