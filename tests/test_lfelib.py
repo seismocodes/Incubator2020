@@ -3,33 +3,29 @@ import lfelib
 def test_version_string():
     assert isinstance(lfelib.__version__, str)
 
-
 # A few test cases
-TDUR = 10.0
-filt = (1.5, 9.0)
-freq0 = 1.0
-nattempts = 10
-waittime = 10.0
-draw = False
-type_threshold = 'MAD'
-threshold = 8
+   
+# Download instrument response
+def test_response():
+    station_file = 'stations_permanent.txt'
+    lfelib.response.get_all_responses(station_file)
 
-# Look at LFEs for April 21st 2008
-tbegin = (2008, 4, 21, 0, 0, 0)
-tend = (2008, 4, 22, 0, 0, 0)
-
-#def test_subduction():
-#    # Subduction zone family
-#    filename = '080421.14.048'
-#    #stations = ['B039', 'KHBB', 'KRMB', 'KSXB', 'WDC', 'YBH']
-#    stations = ['B039', 'KHBB']
-#    lfelib.lfe.find_LFEs(filename, stations, tbegin, tend, TDUR, filt, freq0, nattempts, \
-#        waittime, draw, type_threshold, threshold)
-
-def test_strikeslip():
-    # Strike-slip fault family
-    filename = '080326.08.015'
-    #stations = ['GCK', 'GFC', 'GHL', 'GSN', 'GWR', 'HOPS', 'KCPB']
-    stations = ['GCK', 'GFC']
-    lfelib.lfe.find_LFEs(filename, stations, tbegin, tend, 'strikeslip.csv', TDUR, filt, freq0, nattempts, \
-        waittime, draw, type_threshold, threshold)
+# Look at LFEs for March 7th 2020
+def test_find_all_LFEs():
+    family_file = 'families_permanent.txt'
+    station_file = 'stations_permanent.txt'
+    template_dir = 'templates'
+    tbegin = (2020, 3, 7, 0, 0, 0)
+    tend = (2020, 3, 8, 0, 0, 0)
+    TDUR = 10.0
+    duration = 60.0
+    filt = (1.5, 9.0)
+    freq0 = 1.0
+    dt = 0.05
+    nattempts = 10
+    waittime = 10.0
+    type_threshold = 'MAD'
+    threshold = 8.0
+    lfelib.lfe_all.find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
+    TDUR, duration, filt, freq0, dt, nattempts, waittime, type_threshold, \
+    threshold)

@@ -12,6 +12,8 @@ keywords = ["seismology", "geophysics", "scientific"]
 # https://github.com/python-poetry/poetry/issues/927#issuecomment-538178615
 [tool.poetry.scripts]
 lfefind = 'lfelib.lfe:cli'
+getresp = 'lfelib.response:cli'
+lfeall = 'lfelib.lfe_all:cli'
 
 [tool.poetry.dependencies]
 python = "^3.7"

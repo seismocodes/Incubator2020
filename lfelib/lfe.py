@@ -28,7 +28,6 @@ from utils import correlate
 from utils.get_data import get_from_IRIS, get_from_NCEDC
 import data
 DATADIR = data.__path__[0]
-#print('datadir = ', DATADIR, type(DATADIR))
 
 def clean_LFEs(index, times, meancc, dt, freq0):
     """
@@ -391,17 +390,11 @@ def find_LFEs(filename, stations, tbegin, tend, outputfile, TDUR=10.0, filt=(1.5
                 plt.close(1)
 
     # Add to pandas dataframe and save
-#    namefile = 'LFEs/' + filename + '/catalog.csv'
-#    if os.path.exists(namefile):
-#        df_all = pd.read_csv(namefile)
-#        df_all = pd.concat([df_all, df], ignore_index=True)
-#    else:
     df_all = df
     df_all = df_all.astype(dtype={'year':'int32', 'month':'int32', \
         'day':'int32', 'hour':'int32', 'minute':'int32', \
         'second':'float', 'cc':'float', 'nchannel':'int32'})
     df_all.to_csv('LFEs/' + filename + '/' + outputfile)
-
 
 def cli():
     """Command line parser."""

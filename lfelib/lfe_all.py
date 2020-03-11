@@ -19,6 +19,9 @@ import pickle
 from datetime import timedelta
 from math import ceil, cos, floor, pi
 
+import argparse
+
+# Relative package imports
 from utils import correlate
 from utils.get_data import get_from_IRIS, get_from_NCEDC
 import data
@@ -155,10 +158,45 @@ def find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
     TDUR, duration, filt, freq0, dt, nattempts, waittime, type_threshold='MAD', \
     threshold=0.0075):
     """
-    
+    Find LFEs with the temporary stations from FAME
+    using the templates from Plourde et al. (2015)
+
+    Input:
+        type family_file = string
+        family_file = File containing the list of LFE families
+        type station_file = string
+        station_file = File containing the list of stations
+        type template_dir = string
+        template_dir = Directory where to find the LFE templates
+        type tbegin = tuplet of 6 integers
+        tbegin = Time when we begin looking for LFEs
+        type tend = tuplet of 6 integers
+        tend = Time we stop looking for LFEs
+        type TDUR = float
+        TDUR = Time to add before and after the time window for tapering
+        type duration = float
+        duration = Duration of the LFE templates
+        type filt = tuple of floats
+        filt = Lower and upper frequencies of the filter
+        type freq0 = float
+        freq0 = Maximum frequency rate of LFE occurrence
+        type dt = float
+        dt = Time step for the LFE templates
+        type nattempts = integer
+        nattempts = Number of times we try to download data
+        type waittime = positive float
+        waittime = Type to wait between two attempts at downloading
+        type type_threshold = string
+        type_threshold = 'MAD' or 'Threshold'
+        type threshold = float
+        threshold = Cross correlation value must be higher than that
+    Output:
+        None
     """
+
     # Get the network, channels, and location of the stations
-    staloc = pd.read_csv(station_file, sep=r'\s{1,}', header=None, engine='python')
+    staloc = pd.read_csv(os.path.join(DATADIR, station_file), sep=r'\s{1,}', \
+        header=None, engine='python')
     staloc.columns = ['station', 'network', 'channels', 'location', \
         'server', 'latitude', 'longitude', 'time_on', 'time_off']
 
@@ -228,7 +266,8 @@ def find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
                 pickle.dump(orientation, open(namefile, 'wb'))
 
     # Loop on families
-    families = pd.read_csv(family_file, sep=r'\s{1,}', header=None, engine='python')
+    families = pd.read_csv(os.path.join(DATADIR, family_file), sep=r'\s{1,}', \
+        header=None, engine='python')
     families.columns = ['family', 'stations']
     for i in range(0, len(families)):
 
@@ -251,8 +290,8 @@ def find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
         stations = families['stations'].iloc[i].split(',')
         templates = Stream()
         for station in stations:
-            data = pickle.load(open(template_dir + '/' + families['family'].iloc[i] + \
-            '/' + station + '.pkl', 'rb'))
+            data = pickle.load(open(os.path.join(DATADIR, template_dir) + \
+                '/' + families['family'].iloc[i] + '/' + station + '.pkl', 'rb'))
             if (len(data) == 3):
                 EW = data[0]
                 NS = data[1]
@@ -300,7 +339,7 @@ def find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
                     mylocation = location
                     if (mylocation == '--'):
                         mylocation = ''
-                    response = '/data/response/' + network + '_' + station + '.xml'
+                    response = os.path.join(DATADIR, 'response/') + network + '_' + station + '.xml'
                     inventory = read_inventory(response, format='STATIONXML')
                     reference = []
                     for channel in mychannels:
@@ -373,3 +412,59 @@ def find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
         df_all.to_csv('LFEs/' + families['family'].iloc[i] + '/catalog_' + \
             '{:04d}{:02d}{:02d}_{:02d}{:02d}{:02d}'.format(tbegin[0], \
             tbegin[1], tbegin[2], tbegin[3], tbegin[4], tbegin[5]) + '.csv')
+
+def cli():
+    """Command line parser."""
+    parser = argparse.ArgumentParser( \
+        description='Find LFEs using the templates from Plourde et al')
+    parser.add_argument('-ff', type=str, dest='family_file', \
+        required=True, \
+        help='List of LFE families')
+    parser.add_argument('-s', type=str, dest='station_file', \
+        required=True, \
+        help='List of seismic stations')
+    parser.add_argument('-t', type=str, dest='template_dir', \
+        required=True, \
+        help='Directory where to find LFE templates')
+    parser.add_argument('-t0', type=int, nargs='+', dest='tbegin', \
+        required=True, \
+        help='Time when we begin looking for LFEs')
+    parser.add_argument('-tf', type=int, nargs='+', dest='tend', \
+        required=True, \
+        help='Time we stop looking for LFEs')
+    parser.add_argument('-td', type=float, dest='TDUR', default=10.0, \
+        required=False, \
+        help='Time to add before and after the time window for tapering')
+    parser.add_argument('-d', type=float, dest='duration', default=60.0, \
+        required=False, \
+        help='Duration of the LFE templates')
+    parser.add_argument('-f', type=float, nargs='+', dest='filt',  \
+        default=[1.5, 9.0], required=False, \
+        help='Lower and upper frequencies of the filter')
+    parser.add_argument('-f0', type=float, dest='freq0',  default=1.0, \
+        required=False, \
+        help='Maximum frequency rate of LFE occurrence')
+    parser.add_argument('-dt', type=float, dest='dt',  default=1.0, \
+        required=False, \
+        help='Time step for the LFE templates')
+    parser.add_argument('-n', type=int, dest='nattempts', default=10, \
+        required=False,
+        help='Number of times we try to download data')
+    parser.add_argument('-w', type=float, dest='waittime', default=10.0, \
+        required=False, \
+        help='Time to wait between two attempts at downloading')
+    parser.add_argument('-tr', choices=['MAD','Threshold'], \
+        dest='type_threshold', default='MAD', required=False, \
+        help='Threshold type')
+    parser.add_argument('-tv', type=float, dest='threshold', default=8, \
+        required=False, \
+        help='Threshold value')
+
+    args = parser.parse_args()
+    print(args)
+    find_LFEs(args.family_file, args.station_file, args.template_dir, args.tbegin, args.tend, \
+        args.TDUR, args.duration, args.filt, args.freq0, args.dt, args.nattempts, args.waittime, \
+        args.type_threshold, args.threshold)
+
+if __name__ == '__main__':
+    cli()
