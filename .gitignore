@@ -1,5 +1,6 @@
 # Custom
 *.bak
+lfelib/data/response/*
 lfelib/error/*
 lfelib/LFEs/*
 lfelib/tmp/*
