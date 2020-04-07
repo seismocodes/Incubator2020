@@ -38,7 +38,7 @@ def test_read_template(filename='080326.08.015', station='GCK'):
 
 
 
-# Simple test case
+# Simple test case parameters
 filename = '080326.08.015'
 station = 'GCK'
 network = 'NC'
@@ -54,16 +54,14 @@ tbegin = (2008, 4, 21, 0, 0, 0)
 tend = (2008, 4, 22, 0, 0, 0)
 errorfile = filename + '.txt'
 
-def test_instrument_response_from_IRIS(station, network):
+def test_instrument_response_from_IRIS():
     fdsn_client = fdsn.Client('IRIS')
     inventory = fdsn_client.get_stations(network=network, \
         station=station, level='response')
     inventory.write('data/response/' + network + '_' + station + '.xml', \
         format='STATIONXML')
 
-def test_instrument_response_from_NCEDC(station, network):
-    """
-    """
+def test_instrument_response_from_NCEDC():
     url = 'http://service.ncedc.org/fdsnws/station/1/query?net=' + \
         network + '&sta=' + station + \
         '&level=response&format=xml&includeavailability=true'
@@ -74,8 +72,9 @@ def test_instrument_response_from_NCEDC(station, network):
     file.close()
 
 
-def test_invalid_station_NCEDC(station='JUNK'):
+def test_invalid_station_NCEDC():
     # NOTE: should raise an error for this case
+    station='junk'
     Tstart,Tend = convert_dates(tbegin, tend)
     (D, orientation) = lfelib.utils.get_data.get_from_NCEDC(station, network, channels, location,
     Tstart, Tend, filt, dt, nattempts, waittime, errorfile, DATADIR)
@@ -83,21 +82,24 @@ def test_invalid_station_NCEDC(station='JUNK'):
     assert (D,orientation) == (0,0)
 
 
-def test_valid_station_NCEDC(station='GCK'):
+def test_valid_station_NCEDC():
+    station='GCK'
     Tstart,Tend = convert_dates(tbegin, tend)
     (D, orientation) = lfelib.utils.get_data.get_from_NCEDC(station, network, channels, location,
     Tstart, Tend, filt, dt, nattempts, waittime, errorfile, DATADIR)
 
 
 
-def test_invalid_station_IRIS(station='JUNK'):
+def test_invalid_station_IRIS():
+    station='JUNK'
     Tstart,Tend = convert_dates(tbegin, tend)
     (D, orientation) = lfelib.utils.get_data.get_from_IRIS(station, network, channels, location,
     Tstart, Tend, filt, dt, nattempts, waittime, errorfile, DATADIR)
 
 
 
-def test_valid_station_IRIS(station='GCK'):
+def test_valid_station_IRIS():
+    station='GCK'
     Tstart,Tend = convert_dates(tbegin, tend)
     (D, orientation) = lfelib.utils.get_data.get_from_IRIS(station, network, channels, location,
     Tstart, Tend, filt, dt, nattempts, waittime, errorfile, DATADIR)
