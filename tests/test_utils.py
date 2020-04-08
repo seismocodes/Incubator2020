@@ -4,8 +4,10 @@ import os
 import pickle
 import obspy
 import obspy.clients.fdsn.client as fdsn
-import data
-DATADIR = data.__path__[0]
+import urllib
+
+# data directory is relative to wherever script is run
+DATADIR = os.path.join(os.getcwd(), 'data')
 
 # Begin and end time of analysis
 def convert_dates(tbegin, tend):
@@ -23,23 +25,14 @@ def convert_dates(tbegin, tend):
 
 def test_read_station_metadata():
     # ['station', 'network', 'channels', 'location', 'server', 'latitude', 'longitude']
-    staloc = pd.read_csv(os.path.join(DATADIR, 'station_locations.txt'), \
-        sep=r'\s{1,}', header=None, engine='python')
+    staloc = pd.read_csv('station_locations.txt', sep=r'\s{1,}',
+                          header=None, engine='python')
 
     assert len(staloc.columns) == 7
 
 
-def test_read_template(filename='080326.08.015', station='GCK'):
-    data = pickle.load(open(DATADIR + '/templates/' + filename + \
-        '/' + station + '.pkl', 'rb'))
-
-    assert type(data) == list
-    assert isinstance(data[0], obspy.core.trace.Trace)
-
-
-
 # Simple test case parameters
-filename = '080326.08.015'
+filename='080326.08.015'
 station = 'GCK'
 network = 'NC'
 location = '--'
@@ -54,12 +47,19 @@ tbegin = (2008, 4, 21, 0, 0, 0)
 tend = (2008, 4, 22, 0, 0, 0)
 errorfile = filename + '.txt'
 
-def test_instrument_response_from_IRIS():
-    fdsn_client = fdsn.Client('IRIS')
-    inventory = fdsn_client.get_stations(network=network, \
-        station=station, level='response')
-    inventory.write('data/response/' + network + '_' + station + '.xml', \
-        format='STATIONXML')
+# Takes a while for many stations
+def test_download_response():
+    station_file = 'stations_permanent.txt'
+    lfelib.response.get_all_responses(station_file)
+
+def test_read_template():
+    templatefile = 'templates/' + filename + '/' + station + '.pkl'
+    with open(templatefile, 'rb') as f:
+        data = pickle.load(f)
+
+    assert type(data) == list
+    assert isinstance(data[0], obspy.core.trace.Trace)
+
 
 def test_instrument_response_from_NCEDC():
     url = 'http://service.ncedc.org/fdsnws/station/1/query?net=' + \
@@ -67,7 +67,7 @@ def test_instrument_response_from_NCEDC():
         '&level=response&format=xml&includeavailability=true'
     s = urllib.request.urlopen(url)
     contents = s.read()
-    file = open('data/response/' + network + '_' + station + '.xml', 'wb')
+    file = open(DATADIR + '/response/' + network + '_' + station + '.xml', 'wb')
     file.write(contents)
     file.close()
 
@@ -88,6 +88,15 @@ def test_valid_station_NCEDC():
     (D, orientation) = lfelib.utils.get_data.get_from_NCEDC(station, network, channels, location,
     Tstart, Tend, filt, dt, nattempts, waittime, errorfile, DATADIR)
 
+
+def test_instrument_response_from_IRIS():
+    station = 'B039'
+    network = 'PB'
+    fdsn_client = fdsn.Client('IRIS')
+    inventory = fdsn_client.get_stations(network=network, \
+        station=station, level='response')
+    inventory.write(DATADIR + '/response/' + network + '_' + station + '.xml', \
+        format='STATIONXML')
 
 
 def test_invalid_station_IRIS():
