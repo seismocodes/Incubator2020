@@ -1,9 +1,12 @@
 # Custom
 *.bak
-lfelib/data/response/*
-lfelib/error/*
-lfelib/LFEs/*
-lfelib/tmp/*
+*/response/*
+*/error/*
+*/LFEs/*
+*/tmp/*
+*/data/*
+*.miniseed
+*.request
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

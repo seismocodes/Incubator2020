@@ -1,13 +1,16 @@
+#!/usr/bin/env python3
 """ Script to launch analysis on all families """
 
 import pandas as pd
+#from lfelib.response import get_from_IRIS, get_from_NCEDC
+from lfelib.response import get_all_responses
+from lfelib.lfe_all import find_LFEs
 
-from get_responses import get_from_IRIS, get_from_NCEDC
-from find_all_LFEs import find_LFEs
-
-station_file = 'data/stations_permanent.txt'
+station_file = 'stations_permanent.txt'
+get_all_responses(station_file)
 
 # Get the network and names the stations
+'''
 staloc = pd.read_csv(station_file, sep=r'\s{1,}', header=None, engine='python')
 staloc.columns = ['station', 'network', 'channels', 'location', \
     'server', 'latitude', 'longitude', 'time_on', 'time_off']
@@ -25,11 +28,12 @@ for ir in range(0, len(staloc)):
         get_from_NCEDC(station, network)
     else:
         raise ValueError('You can only download data from IRIS and NCEDC')
+'''
 
 # Look for LFEs for all families
-family_file = 'data/families_permanent.txt'
-station_file = 'data/stations_permanent.txt'
-template_dir = 'data/templates'
+family_file = 'families_permanent.txt'
+station_file = 'stations_permanent.txt'
+template_dir = 'templates'
 tbegin = (2020, 2, 24, 0, 0, 0)
 tend = (2020, 2, 25, 0, 0, 0)
 TDUR = 10.0
@@ -41,7 +45,7 @@ nattempts = 10
 waittime = 10.0
 type_threshold = 'MAD'
 threshold = 8.0
-    
+
 find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
     TDUR, duration, filt, freq0, dt, nattempts, waittime, type_threshold, \
     threshold)
