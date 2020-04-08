@@ -26,8 +26,9 @@ import argparse
 # Relative package imports
 from utils import correlate
 from utils.get_data import get_from_IRIS, get_from_NCEDC
-import data
-DATADIR = data.__path__[0]
+
+# data directory is relative to wherever script is run
+DATADIR = os.path.join(os.getcwd(), 'data')
 
 def clean_LFEs(index, times, meancc, dt, freq0):
     """
@@ -193,7 +194,7 @@ def find_LFEs(filename, stations, tbegin, tend, outputfile, TDUR=10.0, filt=(1.5
     """
 
     # Get the network, channels, and location of the stations
-    staloc = pd.read_csv(os.path.join(DATADIR, 'station_locations.txt'), \
+    staloc = pd.read_csv('station_locations.txt', \
         sep=r'\s{1,}', header=None, engine='python')
     staloc.columns = ['station', 'network', 'channels', 'location', \
         'server', 'latitude', 'longitude']
@@ -212,8 +213,9 @@ def find_LFEs(filename, stations, tbegin, tend, outputfile, TDUR=10.0, filt=(1.5
     # Read the templates
     templates = Stream()
     for station in stations:
-        data = pickle.load(open(DATADIR + '/templates/' + filename + \
-            '/' + station + '.pkl', 'rb'))
+        templatefile = 'templates/' + filename + '/' + station + '.pkl'
+        with open(templatefile, 'rb') as f:
+            data = pickle.load(f)
         if (len(data) == 3):
             EW = data[0]
             NS = data[1]
@@ -436,7 +438,7 @@ def cli():
     parser.add_argument('-tv', type=float, dest='threshold', default=8, \
         required=False, \
         help='Threshold value')
-    parser.add_argument('-o', type=str, dest='outputfile', \
+    parser.add_argument('-o', type=str, dest='outputfile', default='results.csv', \
         required=True, \
         help='Name of outputfile')
 
