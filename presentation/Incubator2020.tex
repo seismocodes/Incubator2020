@@ -6,6 +6,10 @@
 \usepackage{gensymb}
 \usepackage{hyperref}
 \usepackage{textcomp}
+\usepackage{wasysym}
+
+\usepackage{listings}
+\lstset{language=Python}
 
 \usetheme{Warsaw}
 
@@ -21,10 +25,8 @@
 		\titlepage
 	\end{frame}
 
-	\section{The problem}
-	
 	\begin{frame}
-		\frametitle{Low-frequency earthquakes}
+		\frametitle{Low-frequency earthquakes (LFEs)}
 		\begin{itemize}
 			\item Small magnitude (M $\sim$ 1)
 			\item Dominant frequency low (1-10 Hz) compared with that of ordinary tiny earthquakes (up to 20 Hz)
@@ -36,38 +38,152 @@
 
 	\begin{frame}
 		\frametitle{What we do now}
+		\begin{itemize}
+			\item Download seismic data for a given period of time
+			\item Analyze data and find time of occurrence of LFEs
+			\item Create a catalog of LFEs for a given period of time and publish it
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{What we aim to do}
+		\begin{itemize}
+			\item Low-frequency earthquake occur and are recorded by permanent seismic stations every day
+			\item On a daily basis:
+			\begin{itemize}
+				\item Download seismic data from the day before
+				\item Analyze data and find low frequency earthquakes
+				\item Update the catalog
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{First step: Python package}
+		\scriptsize{
+		\begin{columns}[c]
+			\begin{column}{5cm}
+				\begin{block}{catalog}
+				\begin{itemize}
+					\item	Specific Python scripts for downloading data and finding LFEs
+					\item Directory with templates for two LFE families
+				\end{itemize}
+				\end{block}
+				\begin{block}{utils}
+				General Python scripts for stacking and cross-correlation
+				\end{block}
+				\begin{block}{data}
+				\begin{itemize}
+					\item File with list of LFE families
+					\item File with list of seismic stations
+					\item Directory with instrument response from seismic stations
+				\end{itemize}
+				\end{block}
+			\end{column}
+			\begin{column}{1cm}
+				\centering
+				\Huge\pointer
+			\end{column}
+			\begin{column}{5cm}
+				\begin{block}{lfelib}
+				\begin{itemize}
+					\item Specific Python scripts for downloading data and finding LFEs
+					\item \textsf{data} : Templates, instrument responses, list of LFE families and seismic stations
+					\item \textsf{utils} : General Python scripts for stacking and cross-correlation
+				\end{itemize}
+				\end{block}
+				\begin{block}{tests}
+				\end{block}
+				\begin{block}{.github/workflows}
+				\end{block}
+				\begin{itemize}
+					\item environment.yml
+					\item pyproject.toml
+				\end{itemize}
+			\end{column}
+		\end{columns}
+		}
+%		\begin{itemize}
+%			\item Reorganize the Python scripts to create a Python package
+%			\item Each version available online
+%			\item Input data and parameters easy available as well as the codes
+%			\item Can be downloaded easily to be run on a daily basis
+%		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Second step: Command line}
+		\begin{itemize}
+			\item How to launch the scripts in a way that is both easy and fast?
+			\item Create command lines to run Python functions
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Third step: CronJob}
+		\frametitle{Third step: GitHub workflow}
+		\begin{itemize}
+			\item Set up a workflow on GitHub
+			\begin{itemize}
+				\item Check last version of GitHub repository
+				\item Get the appropriate version of Python
+				\item Install the Python package
+				\item Run the script
+				\item Save the results
+			\end{itemize}
+		\end{itemize}		
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Fourth step: Improving computing time}
+		\frametitle{Fourth step: Improving memory and computing time}
+		\begin{itemize}
+			\item Instead of storing instrument response, download them before analyzing the data
+			\item Analysis of several low-frequency earthquake families:
+			\begin{itemize}
+				\item Loop on families: download data relevant to that family, analyze data, delete data
+				\item Loop on seismic stations: Download all data, store them, loop on families, delete data
+
+				$\rightarrow$ Make sure that each chunk of data is downloaded only once
+
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Fifth step: Saving results}
+		To be completed
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{To do in the future: Amazon Lambda}
+		\frametitle{Future improvements}
+		\begin{itemize}
+			\item Increase computing time by parallelization of the Python scripts
+			\item GitHub CronJob offers a limited computing time $\rightarrow$ To analyze more data, we may use Amazon Lambda instead
+		\end{itemize}
 	\end{frame}
 
-	\begin{frame}
-		\frametitle{Conclusion}
-	\end{frame}
+%What does not work:
+%
+%conda activate lfelib-dev
+%poetry install
+%poetry run pytest
+%
+%conda activate lfelib
+%pip install --extra-index-url https://test.pypi.org/simple/ lfelib
+%./myscript
+%
+%What does work:
+%
+%conda activate lfelib-dev
+%./myscript
+%
+%One pull request remaining: What have you done? Can I merge?
+%
+%Modifying the CronJob
+%
+%Send output file somewhere
+%
+%I will do the parallelization later (no need for incubator presentation)
+%
+%I will look at Amazon Lambda later (when I have templates for more LFE families)
 
 \end{document}
