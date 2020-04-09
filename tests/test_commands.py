@@ -2,11 +2,8 @@ import lfelib
 import pandas as pd
 import os
 
-# Test command line utilities:
-#[tool.poetry.scripts]
-#lfefind = 'lfelib.lfe:cli'
-#getresp = 'lfelib.response:cli'
-#lfeall = 'lfelib.lfe_all:cli'
+# data directory is relative to wherever script is run
+DATADIR = os.path.join(os.getcwd(), 'examples')
 
 def test_version_string():
     assert isinstance(lfelib.__version__, str)
@@ -14,12 +11,13 @@ def test_version_string():
 
 def test_getresp():
     # Get station response files
-    station_file = 'stations_permanent.txt'
+    station_file = os.path.join(DATADIR, 'stations_permanent.txt')
     lfelib.response.get_all_responses(station_file)
 
-    assert os.path.isfile('data/response/NC_GCK.xml')
-    assert os.path.isfile('data/response/NC_GFC.xml')
-    assert os.path.isfile('data/response/PB_B039.xml')
+    assert os.path.isfile(os.path.join(DATADIR, 'response/NC_GCK.xml'))
+    assert os.path.isfile(os.path.join(DATADIR, 'response/NC_GFC.xml'))
+    assert os.path.isfile(os.path.join(DATADIR, 'response/PB_B039.xml'))
+    assert os.path.isfile(os.path.join(DATADIR, 'response/NC_KHBB.xml'))
 
 
 def test_lfefind():
@@ -49,6 +47,21 @@ def test_lfefind():
     assert df.shape == (3,8)
 
 
-# Add simple test that doesn't take too long to run, ensuring this function works as expected
-#def test_lfeall():
-#    print('TODO')
+def test_find_all_LFEs():
+    family_file = 'families_permanent.txt'
+    station_file = 'stations_permanent.txt'
+    template_dir = 'templates'
+    tbegin = (2020, 3, 7, 0, 0, 0)
+    tend = (2020, 3, 8, 0, 0, 0)
+    TDUR = 10.0
+    duration = 60.0
+    filt = (1.5, 9.0)
+    freq0 = 1.0
+    dt = 0.05
+    nattempts = 10
+    waittime = 10.0
+    type_threshold = 'MAD'
+    threshold = 8.0
+    lfelib.lfe_all.find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
+        TDUR, duration, filt, freq0, dt, nattempts, waittime, type_threshold, \
+        threshold)

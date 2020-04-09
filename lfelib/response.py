@@ -10,6 +10,9 @@ import urllib.request
 
 import argparse
 
+# data directory is relative to wherever script is run
+DATADIR = os.path.join(os.getcwd(), 'examples')
+
 def get_from_IRIS(station, network):
     """
     Get instrument response from the IRIS DMC
@@ -25,7 +28,7 @@ def get_from_IRIS(station, network):
     fdsn_client = fdsn.Client('IRIS')
     inventory = fdsn_client.get_stations(network=network, \
         station=station, level='response')
-    inventory.write(os.path.join('data', 'response/' + network + '_' + station + '.xml'), \
+    inventory.write(os.path.join(DATADIR, 'response/') + network + '_' + station + '.xml', \
         format='STATIONXML')
 
 def get_from_NCEDC(station, network):
@@ -45,7 +48,7 @@ def get_from_NCEDC(station, network):
         '&level=response&format=xml&includeavailability=true'
     s = urllib.request.urlopen(url)
     contents = s.read()
-    file = open(os.path.join('data', 'response/' + network + '_' + station + '.xml'), 'wb')
+    file = open(os.path.join(DATADIR, 'response/') + network + '_' + station + '.xml', 'wb')
     file.write(contents)
     file.close()
 
@@ -60,13 +63,13 @@ def get_all_responses(station_file):
         None
     """
     # Get the network and names the stations
-    staloc = pd.read_csv(os.path.join(station_file), \
+    staloc = pd.read_csv(os.path.join(DATADIR, station_file), \
         sep=r'\s{1,}', header=None, engine='python')
     staloc.columns = ['station', 'network', 'channels', 'location', \
         'server', 'latitude', 'longitude', 'time_on', 'time_off']
 
     # Create directory for xml files
-    namedir = os.path.join('data', 'response')
+    namedir = os.path.join(DATADIR, 'response/')
     if not os.path.exists(namedir):
         os.makedirs(namedir)
 

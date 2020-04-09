@@ -26,7 +26,7 @@ from utils import correlate
 from utils.get_data import get_from_IRIS, get_from_NCEDC
 
 # data directory is relative to wherever script is run
-DATADIR = os.path.join(os.getcwd(), 'data')
+DATADIR = os.path.join(os.getcwd(), 'examples')
 
 def clean_LFEs(index, times, meancc, dt, freq0):
     """
@@ -196,7 +196,8 @@ def find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
     """
 
     # Get the network, channels, and location of the stations
-    staloc = pd.read_csv(station_file, sep=r'\s{1,}', header=None, engine='python')
+    staloc = pd.read_csv(os.path.join(DATADIR, station_file), \
+        sep=r'\s{1,}', header=None, engine='python')
     staloc.columns = ['station', 'network', 'channels', 'location', \
         'server', 'latitude', 'longitude', 'time_on', 'time_off']
 
@@ -266,7 +267,8 @@ def find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
                 pickle.dump(orientation, open(namefile, 'wb'))
 
     # Loop on families
-    families = pd.read_csv(family_file, sep=r'\s{1,}', header=None, engine='python')
+    families = pd.read_csv(os.path.join(DATADIR, family_file), \
+        sep=r'\s{1,}', header=None, engine='python')
     families.columns = ['family', 'stations']
     for i in range(0, len(families)):
 
@@ -289,7 +291,8 @@ def find_LFEs(family_file, station_file, template_dir, tbegin, tend, \
         stations = families['stations'].iloc[i].split(',')
         templates = Stream()
         for station in stations:
-            templatefile = template_dir + '/' + families['family'].iloc[i] + '/' + station + '.pkl'
+            templatefile = os.path.join(DATADIR, template_dir) + '/' + \
+                families['family'].iloc[i] + '/' + station + '.pkl'
             with open(templatefile, 'rb') as f:
                 data = pickle.load(f)
             if (len(data) == 3):

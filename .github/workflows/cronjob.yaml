@@ -25,7 +25,7 @@ jobs:
 
       - name: Run Analysis
         run: |
-          lfefind -t 080326.08.015 -s GCK GFC -t0 2008 4 21 0 0 0 -tf 2008 4 22 0 0 0
+          ./myscript
 
       - name: Save Results
         run: |
