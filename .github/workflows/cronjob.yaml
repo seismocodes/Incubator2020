@@ -11,7 +11,8 @@ jobs:
     steps:
       - name: Set Job Environment Variables
         run: |
-          DATE="$( date -v -3d '+%Y%m%d' )"
+          DATE="$( date -u -d '3 days ago' '+%Y%m%d' )"
+          echo "::set-env name=DATE::${DATE}"
 
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -21,7 +22,7 @@ jobs:
         with:
            environment-file: environment.yml
            activate-environment: lfelib
-           miniconda-version: 4.7.12
+           miniconda-version: 'latest'
            auto-activate-base: false
            auto-update-conda: false
 
@@ -40,11 +41,11 @@ jobs:
       - name: Upload 080326.08.015 Results CSV
         uses: actions/upload-artifact@v1
         with:
-          name: 080326.08.015/catalog_${DATE}_000000.csv
-          path: ./examples/LFEs/080326.08.015/catalog_${DATE}_000000.csv
+          name: 080326.08.015/catalog_${{env.DATE}}_000000.csv
+          path: ./examples/LFEs/080326.08.015/catalog_${{env.DATE}}_000000.csv
 
       - name: Upload 080421.14.048 Results CSV
         uses: actions/upload-artifact@v1
         with:
-          name: 080421.14.048/catalog_${DATE}_000000.csv
-          path: ./examples/LFEs/080421.14.048/catalog_${DATE}_000000.csv
+          name: 080421.14.048/catalog_${{env.DATE}}_000000.csv
+          path: ./examples/LFEs/080421.14.048/catalog_${{env.DATE}}_000000.csv

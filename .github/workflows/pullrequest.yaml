@@ -37,17 +37,8 @@ jobs:
           poetry config --list
           poetry install
 
-#      - name: Code Quality
-#        run: poetry run black . --check
-
       - name: Test with Pytest
         run: poetry run pytest -v
-
-#      - name: Upload CodeCov Report for Badge
-#        uses: codecov/codecov-action@v1
-#        with:
-#          token: ${{ secrets.CODECOV_TOKEN }} #required
-#          file: ./coverage.xml #optional
 
       - name: Build Package with Poetry
         run: poetry build
