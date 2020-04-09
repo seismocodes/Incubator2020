@@ -1,3 +1,7 @@
+#!/bin/bash
+set -x #echo on
+
+# Find LFEs from 3 days ago
 year1=$(date -v -3d '+%Y')
 month1=$(date -v -3d '+%m')
 day1=$(date -v -3d '+%d')
@@ -7,5 +11,8 @@ month2=$(date -v -2d '+%m')
 day2=$(date -v -2d '+%d')
 
 getresp -s stations_permanent.txt
-
 lfeall -ff families_permanent.txt -s stations_permanent.txt -t templates -t0 $year1 $month1 $day1 0 0 0 -tf $year2 $month2 $day2 0 0 0 -td 10.0 -d 60.0 -f 1.5 9.0 -f0 1.0 -dt 0.05 -n 10 -w 10.0 -tr MAD -tv 8.0
+
+# Outputs 
+#./LFEs/080326.08.015/catalog_20200406_000000.csv
+#./LFEs/080421.14.048/catalog_20200406_000000.csv
