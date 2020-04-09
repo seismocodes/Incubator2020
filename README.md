@@ -6,8 +6,7 @@ This repository contains all files related to the codes developed during Winter 
 
 ## To run the code:
 
-Install and activate environment:
-
+Install and activate environment with latest released version of lfelib
 ```
 conda env create -f environment.yml
 conda activate lfelib

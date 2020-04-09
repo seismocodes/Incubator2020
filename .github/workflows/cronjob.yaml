@@ -3,7 +3,8 @@ name: CronJob
 on:
   schedule:
 #    - cron: '0 0 * * *' # Daily at midnight
-    - cron: '*/5 * * * *' #Every 5 minutes for testing
+    - cron: '0 * * * *' #On the hour
+#    - cron: '*/5 * * * *' #Every 5 minutes for testing
 
 jobs:
   cronjob:
@@ -49,5 +50,13 @@ jobs:
       - name: Upload Zipped LFEs Folder with Results
         uses: actions/upload-artifact@v1
         with:
-          name: ${{env.DATE}}
+          name: ${{env.DATE}}.zip
           path: ./examples/LFEs/
+
+      # Consider setting up Google Drive Upload later
+      #- name: Upload to Google Drive
+      #  uses: satackey/action-google-drive@v1
+      #  with:
+      #    skicka-tokencache-json: ${{ secrets.SKICKA_TOKENCACHE_JSON }}
+      #    upload-from: ./
+      #    upload-to: /path/to/upload

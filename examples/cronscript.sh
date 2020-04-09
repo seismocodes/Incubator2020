@@ -1,6 +1,8 @@
 #!/bin/bash
 set -x #echo on
 
+# This runs lfelib scripts to search for LFEs from 3 days ago
+
 # data command syntax works on macosx, not Ubuntu :(
 #year1=$(date -v -3d '+%Y')
 #month1=$(date -v -3d '+%m')
@@ -18,15 +20,12 @@ month2=$(date -u -d '2 days ago' '+%m')
 day2=$(date -u -d '2 days ago' '+%d')
 
 
-#getresp -s stations_permanent.txt
-#lfeall -ff families_permanent.txt -s stations_permanent.txt -t templates -t0 $year1 $month1 $day1 0 0 0 -tf $year2 $month2 $day2 0 0 0 -td 10.0 -d 60.0 -f 1.5 9.0 -f0 1.0 -dt 0.05 -n 10 -w 10.0 -tr MAD -tv 8.0
+# Main workflow
+getresp -s stations_permanent.txt
+lfeall -ff families_permanent.txt -s stations_permanent.txt -t templates -t0 $year1 $month1 $day1 0 0 0 -tf $year2 $month2 $day2 0 0 0 -td 10.0 -d 60.0 -f 1.5 9.0 -f0 1.0 -dt 0.05 -n 10 -w 10.0 -tr MAD -tv 8.0
 
 # Dummy workflow for testing
-mkdir -p ./LFEs/080326.08.015
-echo 'a result' > LFEs/080326.08.015/catalog_20200406_000000.csv
-mkdir -p ./LFEs/080421.14.048
-echo 'a result' > LFEs/080421.14.048/catalog_20200406_000000.csv
-
-# Outputs named by date1 (3 days ago):
-#./LFEs/080326.08.015/catalog_20200406_000000.csv
-#./LFEs/080421.14.048/catalog_20200406_000000.csv
+#mkdir -p ./LFEs/080326.08.015
+#echo 'a result' > LFEs/080326.08.015/catalog_20200406_000000.csv
+#mkdir -p ./LFEs/080421.14.048
+#echo 'a result' > LFEs/080421.14.048/catalog_20200406_000000.csv

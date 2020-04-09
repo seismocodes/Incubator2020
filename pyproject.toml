@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lfelib"
-version = "0.0.2"
+version = "0.0.3"
 description = "Python routines for working with GPS time series from a variety of processing centers"
 authors = ["Ariane Ducellier <ducela@uw.edu>"]
 license = "GNU General Public License v3.0"
