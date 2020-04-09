@@ -1,0 +1,28 @@
+\frametitle{Third step: GitHub workflow}
+\begin{exampleblock}{}
+\tiny{
+\begin{verbatim}
+name: CronJob
+on:
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  cronjob:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install lfelib from PyPi
+        run: |
+          python --version
+          pip install --extra-index-url https://test.pypi.org/simple/ lfelib
+      - name: Run Analysis
+        run: |
+          ./myscript
+\end{verbatim}
+}
+\end{exampleblock}

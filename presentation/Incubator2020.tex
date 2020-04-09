@@ -9,11 +9,19 @@
 \usepackage{wasysym}
 
 \usepackage{listings}
-\lstset{language=Python}
+\usepackage{listings}
+\lstset{language=Python,
+    basicstyle=\ttfamily\bfseries,
+    commentstyle=\color{red}\itshape,
+    stringstyle=\color{darkolivegreen},
+    showstringspaces=false,
+    keywordstyle=\color{blue}\bfseries}
 
 \usetheme{Warsaw}
 
 \newcommand{\btVFill}{\vskip0pt plus 1filll}
+
+\definecolor{darkolivegreen}{rgb}{0.33, 0.42, 0.18}
 
 \title[Daily monitoring of low-frequency earthquake activity]{Daily monitoring of low-frequency earthquake activity}
 \author{Ariane Ducellier, Scott Henderson}
@@ -58,7 +66,7 @@
 		\end{itemize}
 	\end{frame}
 
-	\begin{frame}
+	\begin{frame}[fragile]
 		\frametitle{First step: Python package}
 		\scriptsize{
 		\begin{columns}[c]
@@ -88,11 +96,13 @@
 				\begin{block}{lfelib}
 				\begin{itemize}
 					\item Specific Python scripts for downloading data and finding LFEs
-					\item \textsf{data} : Templates, instrument responses, list of LFE families and seismic stations
-					\item \textsf{utils} : General Python scripts for stacking and cross-correlation
+					\item \verb+utils+ : General Python scripts for stacking and cross-correlation
 				\end{itemize}
 				\end{block}
 				\begin{block}{tests}
+				\end{block}
+				\begin{block}{examples}
+				Templates, instrument responses, list of LFE families and seismic stations
 				\end{block}
 				\begin{block}{.github/workflows}
 				\end{block}
@@ -103,34 +113,71 @@
 			\end{column}
 		\end{columns}
 		}
-%		\begin{itemize}
-%			\item Reorganize the Python scripts to create a Python package
-%			\item Each version available online
-%			\item Input data and parameters easy available as well as the codes
-%			\item Can be downloaded easily to be run on a daily basis
-%		\end{itemize}
 	\end{frame}
 
-	\begin{frame}
+	\begin{frame}[fragile]
 		\frametitle{Second step: Command line}
-		\begin{itemize}
-			\item How to launch the scripts in a way that is both easy and fast?
-			\item Create command lines to run Python functions
-		\end{itemize}
+		\begin{exampleblock}{}
+		\scriptsize{
+		\begin{lstlisting}
+		> python
+		>>>  get_all_responses('stations_permanent.txt')
+		>>>  find_LFEs('families_permanent.txt', \
+		    'stations_permanent.txt', 'templates', \
+		    (2020, 3, 7, 0, 0, 0), (2020, 3, 8, 0, 0, 0), 10.0, \
+		    60.0, (1.5, 9.0), 1.0, 0.05, 10, 10.0, 'MAD', 8.0)
+		\end{lstlisting}
+		}
+		\end{exampleblock}
+
+		\centering
+		\Huge{
+		$\Downarrow$
+		}
+
+		\begin{exampleblock}{}
+		\scriptsize{
+		\begin{verbatim}
+		getresp -s stations_permanent.txt
+
+		lfeall -ff families_permanent.txt -s stations_permanent.txt 
+		-t templates -t0 $year1 $month1 $day1 0 0 0
+		-tf $year2 $month2 $day2 0 0 0 -td 10.0 -d 60.0
+		-f 1.5 9.0 -f0 1.0 -dt 0.05 -n 10 -w 10.0 -tr MAD -tv 8.0
+		\end{verbatim}
+		}
+		\end{exampleblock}
 	\end{frame}
 
-	\begin{frame}
+	\begin{frame}[fragile]
 		\frametitle{Third step: GitHub workflow}
-		\begin{itemize}
-			\item Set up a workflow on GitHub
-			\begin{itemize}
-				\item Check last version of GitHub repository
-				\item Get the appropriate version of Python
-				\item Install the Python package
-				\item Run the script
-				\item Save the results
-			\end{itemize}
-		\end{itemize}		
+		\begin{exampleblock}{}
+		\tiny{
+		\begin{verbatim}
+		name: CronJob
+		on:
+		  schedule:
+		    - cron: '0 0 * * *'
+		jobs:
+		  cronjob:
+		    runs-on: ubuntu-18.04
+		    steps:
+		      - name: Checkout Repo
+		        uses: actions/checkout@v2
+		      - name: Set up Python 3.7
+		        uses: actions/setup-python@v1
+		        with:
+		          python-version: 3.7
+		      - name: Install lfelib from PyPi
+		        run: |
+		          python --version
+		          pip install --extra-index-url https://test.pypi.org/simple/ lfelib
+		      - name: Run Analysis
+		        run: |
+		          ./myscript
+		\end{verbatim}
+		}
+		\end{exampleblock}
 	\end{frame}
 
 	\begin{frame}
