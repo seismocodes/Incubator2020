@@ -1,32 +1,50 @@
 name: CronJob
-# Run latest tagged version of software and save result every day
+
 on:
   schedule:
-    - cron: '0 0 * * *' # Daily at midnight
-#    - cron: '*/5 * * * *' #Every 5 minutes for testing
+#    - cron: '0 0 * * *' # Daily at midnight
+    - cron: '*/5 * * * *' #Every 5 minutes for testing
 
 jobs:
   cronjob:
     runs-on: ubuntu-18.04
     steps:
+      - name: Set Job Environment Variables
+        run: |
+          DATE="$( date -v -3d '+%Y%m%d' )"
+
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+      - name: Setup Conda Environment
+        uses: goanpeca/setup-miniconda@v1
         with:
-          python-version: 3.7
+           environment-file: environment.yml
+           activate-environment: lfelib
+           miniconda-version: 4.7.12
+           auto-activate-base: false
+           auto-update-conda: false
 
-      # NOTE: change this to PyPi later
-      - name: Install lfelib from PyPi
+      # Later change to versioned release on pypi
+      - name: Install lfelib
+        shell: bash -l {0}
         run: |
-          python --version
-          pip install --extra-index-url https://test.pypi.org/simple/ lfelib
+          pip install git+git://github.com/ArianeDucellier/Incubator2020
 
-      - name: Run Analysis
+      - name: Run Daily Processing
+        shell: bash -l {0}
         run: |
-          ./myscript
+          cd examples
+          ./cronscript.sh
 
-      - name: Save Results
-        run: |
-          ls
+      - name: Upload 080326.08.015 Results CSV
+        uses: actions/upload-artifact@v1
+        with:
+          name: 080326.08.015/catalog_${DATE}_000000.csv
+          path: ./examples/LFEs/080326.08.015/catalog_${DATE}_000000.csv
+
+      - name: Upload 080421.14.048 Results CSV
+        uses: actions/upload-artifact@v1
+        with:
+          name: 080421.14.048/catalog_${DATE}_000000.csv
+          path: ./examples/LFEs/080421.14.048/catalog_${DATE}_000000.csv

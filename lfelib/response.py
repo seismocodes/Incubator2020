@@ -11,7 +11,7 @@ import urllib.request
 import argparse
 
 # data directory is relative to wherever script is run
-DATADIR = os.path.join(os.getcwd(), 'examples')
+DATADIR = os.path.join(os.getcwd(), 'data')
 
 def get_from_IRIS(station, network):
     """
@@ -44,13 +44,13 @@ def get_from_NCEDC(station, network):
         None
     """
     url = 'http://service.ncedc.org/fdsnws/station/1/query?net=' + \
-        network + '&sta=' + station + \
-        '&level=response&format=xml&includeavailability=true'
+        network + '&sta=' + station + '&level=response&format=xml'
+        # &includeavailability=true' # not working currently...
     s = urllib.request.urlopen(url)
     contents = s.read()
-    file = open(os.path.join(DATADIR, 'response/') + network + '_' + station + '.xml', 'wb')
-    file.write(contents)
-    file.close()
+    with open(os.path.join(DATADIR, 'response/') + network + '_' + station + '.xml', 'wb') as f:
+        f.write(contents)
+        f.close()
 
 def get_all_responses(station_file):
     """
@@ -63,7 +63,7 @@ def get_all_responses(station_file):
         None
     """
     # Get the network and names the stations
-    staloc = pd.read_csv(os.path.join(DATADIR, station_file), \
+    staloc = pd.read_csv(station_file, \
         sep=r'\s{1,}', header=None, engine='python')
     staloc.columns = ['station', 'network', 'channels', 'location', \
         'server', 'latitude', 'longitude', 'time_on', 'time_off']

@@ -5,6 +5,7 @@
 */LFEs/*
 */tmp/*
 */data/*
+tests/08*txt
 *.miniseed
 *.request
 

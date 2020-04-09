@@ -7,7 +7,7 @@ import obspy.clients.fdsn.client as fdsn
 import urllib
 
 # data directory is relative to wherever script is run
-DATADIR = os.path.join(os.getcwd(), 'examples')
+DATADIR = os.path.join(os.getcwd(), 'data')
 
 # Begin and end time of analysis
 def convert_dates(tbegin, tend):
@@ -25,7 +25,7 @@ def convert_dates(tbegin, tend):
 
 def test_read_station_metadata():
     # ['station', 'network', 'channels', 'location', 'server', 'latitude', 'longitude']
-    staloc = pd.read_csv(os.path.join(DATADIR, 'stations_permanent.txt'), \
+    staloc = pd.read_csv('stations_permanent.txt', \
         sep=r'\s{1,}', header=None, engine='python')
 
     assert len(staloc.columns) == 9
@@ -49,11 +49,11 @@ errorfile = filename + '.txt'
 
 # Takes a while for many stations
 def test_download_response():
-    station_file = os.path.join(DATADIR, 'stations_permanent.txt')
+    station_file = 'stations_permanent.txt'
     lfelib.response.get_all_responses(station_file)
 
 def test_read_template():
-    templatefile = os.path.join(DATADIR, 'templates/') + filename + '/' + station + '.pkl'
+    templatefile = 'templates/' + filename + '/' + station + '.pkl'
     with open(templatefile, 'rb') as f:
         data = pickle.load(f)
 

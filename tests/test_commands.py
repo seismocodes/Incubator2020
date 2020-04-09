@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # data directory is relative to wherever script is run
-DATADIR = os.path.join(os.getcwd(), 'examples')
+DATADIR = os.path.join(os.getcwd(), 'data')
 
 def test_version_string():
     assert isinstance(lfelib.__version__, str)
@@ -11,7 +11,7 @@ def test_version_string():
 
 def test_getresp():
     # Get station response files
-    station_file = os.path.join(DATADIR, 'stations_permanent.txt')
+    station_file = 'stations_permanent.txt'
     lfelib.response.get_all_responses(station_file)
 
     assert os.path.isfile(os.path.join(DATADIR, 'response/NC_GCK.xml'))
@@ -46,7 +46,7 @@ def test_lfefind():
     assert os.path.isfile(f'LFEs/{filename}/{output}')
     assert df.shape == (3,8)
 
-
+# Takes several minutes to run
 def test_find_all_LFEs():
     family_file = 'families_permanent.txt'
     station_file = 'stations_permanent.txt'
