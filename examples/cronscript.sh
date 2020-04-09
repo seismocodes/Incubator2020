@@ -9,9 +9,10 @@ set -x #echo on
 #month2=$(date -v -2d '+%m')
 #day2=$(date -v -2d '+%d')
 
+# Works on Ubuntu Linux:
 year1=$(date -u -d '3 days ago' '+%Y')
 month1=$(date -u -d '3 days ago' '+%m')
-day1=$(date -u -d '3 days ago''+%d')
+day1=$(date -u -d '3 days ago' '+%d')
 year2=$(date -u -d '2 days ago' '+%Y')
 month2=$(date -u -d '2 days ago' '+%m')
 day2=$(date -u -d '2 days ago' '+%d')

@@ -19,7 +19,7 @@ lfeall = 'lfelib.lfe_all:cli'
 python = "^3.7"
 #https://github.com/obspy/obspy/issues/2434
 numpy = "1.16.*"
-pandas = "^0.25"
+pandas = "^1.0"
 scipy = "^1.4"
 matplotlib = "^3.1"
 obspy = "^1.1"
@@ -27,7 +27,7 @@ scikit-learn = "^0.22"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
-pytest-cov = "^2.8"
+# pytest-cov = "^2.8"
 #black = {version = "^19.10b0", allow-prereleases = true}
 #dunamai = "^1" #currently failing
 
