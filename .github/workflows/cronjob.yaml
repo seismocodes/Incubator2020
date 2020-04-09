@@ -38,14 +38,15 @@ jobs:
           cd examples
           ./cronscript.sh
 
+      # NOTE: artiface "name": cannot contain '\', '/', "', ':', '<', '>', '|', '*', and '?'
       - name: Upload 080326.08.015 Results CSV
         uses: actions/upload-artifact@v1
         with:
-          name: 080326.08.015/catalog_${{env.DATE}}_000000.csv
+          name: 080326.08.015_${{env.DATE}}_000000.csv
           path: ./examples/LFEs/080326.08.015/catalog_${{env.DATE}}_000000.csv
 
       - name: Upload 080421.14.048 Results CSV
         uses: actions/upload-artifact@v1
         with:
-          name: 080421.14.048/catalog_${{env.DATE}}_000000.csv
+          name: 080421.14.048_${{env.DATE}}_000000.csv
           path: ./examples/LFEs/080421.14.048/catalog_${{env.DATE}}_000000.csv
