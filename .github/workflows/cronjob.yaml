@@ -2,8 +2,8 @@ name: CronJob
 
 on:
   schedule:
-#    - cron: '0 0 * * *' # Daily at midnight
-    - cron: '0 * * * *' #On the hour
+    - cron: '0 0 * * *' # Daily at midnight
+#    - cron: '0 * * * *' #On the hour
 #    - cron: '*/5 * * * *' #Every 5 minutes for testing
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
       - name: Upload Zipped LFEs Folder with Results
         uses: actions/upload-artifact@v1
         with:
-          name: ${{env.DATE}}.zip
+          name: ${{env.DATE}}
           path: ./examples/LFEs/
 
       # Consider setting up Google Drive Upload later
