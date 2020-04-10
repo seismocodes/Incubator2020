@@ -1,8 +1,8 @@
-# Incubator2020
-![Package Build Status](https://github.com/ArianeDucellier/Incubator2020/workflows/Package/badge.svg)
-![Daily Run](https://github.com/ArianeDucellier/Incubator2020/workflows/CronJob/badge.svg)
+# lfelib
+![Package Build Status](https://github.com/seismocodes/lfelib/Package/badge.svg)
+![Daily Run](https://github.com/seismocodes/lfelib/workflows/CronJob/badge.svg)
 
-This repository contains all files related to the codes developed during Winter 2020 Incubator project Daily monitoring of low-frequency earthquake activity and slow slip event occurrence.
+This repository contains all files related to the codes developed during [University of Washington eScience Winter 2020 Incubator](https://escience.washington.edu/winter-2020-incubator-projects/) project: "Daily monitoring of low-frequency earthquake activity and slow slip event occurrence."
 
 ## To run the code:
 
@@ -18,10 +18,9 @@ Run `lfefind` command to look for LFEs for two families during the day of April 
 lfefind -t 080326.08.015 -s GCK GFC -t0 2008 4 21 0 0 0 -tf 2008 4 22 0 0 0
 ```
 
-## Development environment
+## Install development environment for testing and packaging
 
 To make changes to the codebase and create new package releases install a development environment:
-
 ```
 conda env create -f environment-dev.yml
 conda activate lfelib-dev
@@ -31,4 +30,11 @@ poetry install
 Run tests
 ```
 poetry run pytest
+```
+
+Release a new version on Test PyPi
+```
+# First edit "version" in pyproject.toml file
+git tag 0.0.3
+git push --tags
 ```

@@ -5,8 +5,8 @@ description = "Python routines for working with GPS time series from a variety o
 authors = ["Ariane Ducellier <ducela@uw.edu>"]
 license = "GNU General Public License v3.0"
 readme = "README.md"
-homepage = "https://github.com/ArianeDucellier/Incubator2020"
-repository = "https://github.com/ArianeDucellier/Incubator2020"
+homepage = "https://github.com/seismocodes/lfelib"
+repository = "https://github.com/seismocodes/lfelib"
 keywords = ["seismology", "geophysics", "scientific"]
 
 # https://github.com/python-poetry/poetry/issues/927#issuecomment-538178615
