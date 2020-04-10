@@ -181,18 +181,71 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Fourth step: Improving memory and computing time}
-		\begin{itemize}
-			\item Instead of storing instrument response, download them before analyzing the data
-			\item Analysis of several low-frequency earthquake families:
-			\begin{itemize}
-				\item Loop on families: download data relevant to that family, analyze data, delete data
-				\item Loop on seismic stations: Download all data, store them, loop on families, delete data
+		\frametitle{Fourth step: Improving memory space and computing time}
+		\begin{columns}[c]
+			\begin{column}{5cm}
+				\begin{block}{Memory space}
+				Store instrument response into data directory
+				\end{block}
+			\end{column}
+			\begin{column}{1cm}
+				\centering
+				\Huge\pointer
+			\end{column}
+			\begin{column}{5cm}
+				\begin{block}{Memory space}
+				Download instrument response before looking for LFEs
+				\end{block}
+			\end{column}
+		\end{columns}
 
-				$\rightarrow$ Make sure that each chunk of data is downloaded only once
+		\vspace{1cm}
 
-			\end{itemize}
-		\end{itemize}
+		\begin{columns}[c]
+			\begin{column}{5cm}
+				\begin{block}{Computing time}
+				Loop on LFE families
+
+				\hspace{5mm} Loop on seismic stations
+
+				\hspace{1cm} Download seismic data
+
+				\hspace{5mm} Analyze seismic data
+
+				\hspace{5mm} Delete seismic data
+				\end{block}
+			\end{column}
+			\begin{column}{1cm}
+				\centering
+				\Huge\pointer
+			\end{column}
+			\begin{column}{5cm}
+				\begin{block}{Computing time}
+				Loop on seismic stations
+
+				\hspace{5mm} Download seismic data
+
+				Loop on LFE families
+
+				\hspace{5mm} Analyze seismic data
+
+				Delete seismic data
+				\end{block}
+			\end{column}
+		\end{columns}
+
+
+%		\begin{itemize}
+%			\item Instead of storing instrument response, download them before analyzing the data
+%			\item Analysis of several low-frequency earthquake families:
+%			\begin{itemize}
+%				\item Loop on families: download data relevant to that family, analyze data, delete data
+%				\item Loop on seismic stations: Download all data, store them, loop on families, delete data
+%
+%				$\rightarrow$ Make sure that each chunk of data is downloaded only once
+%
+%			\end{itemize}
+%		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
