@@ -40,7 +40,7 @@ jobs:
           #./cronscript.sh
 
           # Simple commands to test
-          mkdir LFEs
+          mkdir -p LFEs/${{env.DATE}}
           echo "A Test File" > LFEs/${{env.DATE}}/results.csv
 
       # NOTE: artiface "name": cannot contain '\', '/', "', ':', '<', '>', '|', '*', and '?'
