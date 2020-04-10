@@ -2,9 +2,9 @@ name: CronJob
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Daily at midnight
+#    - cron: '0 0 * * *' # Daily at midnight
 #    - cron: '0 * * * *' #On the hour
-#    - cron: '*/10 * * * *' #Every 10 minutes for testing
+    - cron: '*/5 * * * *' #Every 5 minutes for testing
 
 jobs:
   cronjob:
@@ -31,13 +31,17 @@ jobs:
       - name: Install lfelib
         shell: bash -l {0}
         run: |
-          pip install git+git://github.com/seismocodes/lfelib
+          pip install --extra-index-url https://test.pypi.org/simple/ lfelib
 
       - name: Run Daily Processing
         shell: bash -l {0}
         run: |
           cd examples
-          ./cronscript.sh
+          #./cronscript.sh
+
+          # Simple commands to test
+          mkdir LFEs
+          echo "A Test File" > results.csv
 
       # NOTE: artiface "name": cannot contain '\', '/', "', ':', '<', '>', '|', '*', and '?'
       # Single file save
@@ -53,10 +57,12 @@ jobs:
           name: ${{env.DATE}}
           path: ./examples/LFEs/
 
-      # Consider setting up Google Drive Upload later
-      #- name: Upload to Google Drive
-      #  uses: satackey/action-google-drive@v1
-      #  with:
-      #    skicka-tokencache-json: ${{ secrets.SKICKA_TOKENCACHE_JSON }}
-      #    upload-from: ./
-      #    upload-to: /path/to/upload
+      - name: Upload Results CSVs to Google Drive
+        uses: wei/rclone@v1
+        env:
+          RCLONE_CONFIG_INCUBATOR_TOKEN: ${{ secrets.RCLONE_CONFIG_INCUBATOR_TOKEN }}
+          RCLONE_CONFIG_INCUBATOR_TEAM_DRIVE: ${{secrets.RCLONE_CONFIG_INCUBATOR_TEAM_DRIVE }}
+          RCLONE_CONFIG_INCUBATOR_TYPE: drive
+          RCLONE_CONFIG_INCUBATOR_SCOPE: drive
+        with:
+          args: copy ./examples/LFEs/ incubator:lfelib/cronjob
