@@ -41,7 +41,7 @@ jobs:
 
           # Simple commands to test
           mkdir LFEs
-          echo "A Test File" > results.csv
+          echo "A Test File" > LFEs/${{env.DATE}}/results.csv
 
       # NOTE: artiface "name": cannot contain '\', '/', "', ':', '<', '>', '|', '*', and '?'
       # Single file save
