@@ -2,9 +2,9 @@ name: CronJob
 
 on:
   schedule:
-#    - cron: '0 0 * * *' # Daily at midnight
+    - cron: '0 0 * * *' # Daily at midnight
 #    - cron: '0 * * * *' #On the hour
-    - cron: '*/30 * * * *' #Every x minutes for testing
+#    - cron: '*/30 * * * *' #Every x minutes for testing
 
 jobs:
   cronjob:
