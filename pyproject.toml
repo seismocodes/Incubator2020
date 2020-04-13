@@ -22,7 +22,7 @@ numpy = "1.16.*"
 pandas = "^1.0"
 scipy = "^1.4"
 matplotlib = "^3.1"
-obspy = "^1.1"
+obspy = "1.1.1"
 scikit-learn = "^0.22"
 
 [tool.poetry.dev-dependencies]
