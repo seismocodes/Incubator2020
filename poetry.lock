@@ -164,7 +164,7 @@ description = "ObsPy - a Python framework for seismological observatories."
 name = "obspy"
 optional = false
 python-versions = "*"
-version = "1.2.1"
+version = "1.1.1"
 
 [package.dependencies]
 decorator = "*"
