@@ -1,28 +1,38 @@
 \frametitle{Third step: GitHub workflow}
-\begin{exampleblock}{}
+\begin{block}{Run the script downloading the data and looking for LFEs}
 \tiny{
 \begin{verbatim}
-name: CronJob
-on:
-  schedule:
-    - cron: '0 0 * * *'
-jobs:
-  cronjob:
-    runs-on: ubuntu-18.04
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.7
-      - name: Install lfelib from PyPi
+      - name: Run Daily Processing
+        shell: bash -l {0}
         run: |
-          python --version
-          pip install --extra-index-url https://test.pypi.org/simple/ lfelib
-      - name: Run Analysis
-        run: |
-          ./myscript
+          cd examples
+          ./cronscript.sh
 \end{verbatim}
 }
-\end{exampleblock}
+\end{block}
+\begin{block}{Upload the output file}
+\tiny{
+\begin{verbatim}
+      - name: Upload Zipped LFEs Folder with Results
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{env.DATE}}
+          path: ./examples/LFEs/
+\end{verbatim}
+}
+\end{block}
+\begin{block}{Save the output file on Google Drive}
+\tiny{
+\begin{verbatim}
+      - name: Upload Results CSVs to Google Drive
+        uses: wei/rclone@v1
+        env:
+          RCLONE_CONFIG_INCUBATOR_TOKEN: ${{ secrets.RCLONE_CONFIG_INCUBATOR_TOKEN }}
+          RCLONE_CONFIG_INCUBATOR_TEAM_DRIVE: ${{secrets.RCLONE_CONFIG_INCUBATOR_TEAM_DRIVE }}
+           RCLONE_CONFIG_INCUBATOR_TYPE: drive
+          RCLONE_CONFIG_INCUBATOR_SCOPE: drive
+        with:
+          args: copy ./examples/LFEs/ incubator:lfelib/cronjob
+\end{verbatim}
+}
+\end{block}
