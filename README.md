@@ -1,5 +1,5 @@
 # lfelib
-![Package Build Status](https://github.com/seismocodes/lfelib/Package/badge.svg)
+![Package Build Status](https://github.com/seismocodes/lfelib/workflows/Package/badge.svg)
 ![Daily Run](https://github.com/seismocodes/lfelib/workflows/CronJob/badge.svg)
 
 This repository contains all files related to the codes developed during [University of Washington eScience Winter 2020 Incubator](https://escience.washington.edu/winter-2020-incubator-projects/) project: "Daily monitoring of low-frequency earthquake activity and slow slip event occurrence."
