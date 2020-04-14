@@ -5,7 +5,7 @@ channels:
 dependencies:
   - python=3.7
   - jupyterlab
-  - obspy
+  - obspy<1.2
   - pandas
   - scikit-learn
   - matplotlib
