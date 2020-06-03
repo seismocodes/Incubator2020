@@ -13,9 +13,11 @@ conda activate lfelib
 pip install --extra-index-url https://test.pypi.org/simple/ lfelib
 ```
 
-Run `lfefind` command to look for LFEs for two families during the day of April 21st 2008. It will create two output files catalog.csv in the directory LFEs/family_name. Each of the pickle files contains a pandas dataframe with columns year, month, day, hour, minute, second where the LFE was detected, corresponding value of the cross-correlation, number of channels that were used to detect the LFE.
+Run `lfeall` command to look for LFEs for two families during the day of April 21st 2020. It will create two output files catalog.csv in the directory LFEs/family_name. Each of the pickle files contains a pandas dataframe with columns year, month, day, hour, minute, second where the LFE was detected, corresponding value of the cross-correlation, number of channels that were used to detect the LFE.
 ```
-lfefind -t 080326.08.015 -s GCK GFC -t0 2008 4 21 0 0 0 -tf 2008 4 22 0 0 0
+cd examples
+getresp -s stations_permanent.txt
+lfeall -ff families_permanent.txt -s stations_permanent.txt -t templates -t0 2020 4 21 0 0 0 -tf 2020 4 22 0 0 0
 ```
 
 ## Install development environment for testing and packaging
