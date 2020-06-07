@@ -1,5 +1,7 @@
 # Custom
 *.bak
+docs/*
+lfelib/output/*
 */response/*
 */error/*
 */LFEs/*
