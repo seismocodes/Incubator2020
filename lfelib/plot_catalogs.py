@@ -2,14 +2,17 @@
 This module contains a function to plot catalogs
 of low-frequency earthquakes
 """
+import matplotlib.pylab as pylab
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
 import pickle
 
 from datetime import datetime, timedelta
+from math import floor
 
-def plot_catalogs(family_file, window = 86400.0):
+def plot_catalogs(family_file, window = 86400):
     """
     Plot catalogs for all the families in input file
 
@@ -22,7 +25,7 @@ def plot_catalogs(family_file, window = 86400.0):
         None
     """
     if int(window) == 3600:
-        name = 'housr'
+        name = 'hours'
     elif int(window) == 86400:
         name = 'days'
     else:
@@ -40,13 +43,18 @@ def plot_catalogs(family_file, window = 86400.0):
         days = os.listdir(namedir)
         catalogs = list()
         for day in days:
-            df = pd.read_csv(day)
-            catalogs.append(day)
+            df = pd.read_csv(namedir + '/' + day, index_col=0)
+            catalogs.append(df)
         catalog = pd.concat(catalogs, ignore_index=True)
 
         # Create time series
-        tbegin =
-        tend =
+        df = pd.DataFrame({'year':catalog['year'], \
+            'month':catalog['month'], 'day':catalog['day']})
+        date = pd.to_datetime(df)
+        t1 = date.min()
+        t2 = date.max()
+        tbegin = datetime(t1.year, t1.month, t1.day, 0, 0, 0, 0)
+        tend = datetime(t2.year, t2.month, t2.day, 0, 0, 0, 0)
         dt = tend - tbegin
         duration = dt.days * 86400.0 + dt.seconds + dt.microseconds * 0.000001
         nw = int(duration / window)
@@ -72,13 +80,22 @@ def plot_catalogs(family_file, window = 86400.0):
                 X[index] = X[index] + 1
 
         # Plot figure
-        plt.figure(1, figsize=(20, 10))
+        plt.figure(1, figsize=(10, 6))
+        params = {'xtick.labelsize':16,
+                  'ytick.labelsize':16}
+        pylab.rcParams.update(params) 
         plt.stem(np.arange(0, len(X)), X, 'k-', markerfmt=' ', basefmt=' ')
         plt.xlim([-0.5, len(X) - 0.5])
         plt.xlabel('Time ({}) since {:4d}/{:2d}/{:2d}'. \
-            format(name, tbegin.year, tbegin.month, tbegin.day), fontsize=24)
-        plt.ylabel('Number of LFEs', fontsize=24)
+            format(name, tbegin.year, tbegin.month, tbegin.day), fontsize=20)
+        plt.ylabel('Number of LFEs', fontsize=20)
         plt.title('Family {} ({:d} LFEs)'.format(families['family'].iloc[i], np.sum(X)), \
             fontsize=24)
         plt.savefig('output/' + families['family'].iloc[i] + '.eps', format='eps')
         plt.close(1)
+
+if __name__ == '__main__':
+    
+    family_file = '../examples/families_permanent.txt'
+    window = 86400
+    plot_catalogs(family_file, window)
